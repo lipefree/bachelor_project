@@ -1,0 +1,4 @@
+repository "bachelor_project@lipefree_projects@cloud"
+  path "/"
+    br "/main"
+    co "/main"
