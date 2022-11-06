@@ -35,11 +35,11 @@ public class MenuInstantiation : MonoBehaviour
             // Find all UI elements for the menu and position them at the position of the mouse
             PlaceUI();
 
-            if(OnTopOfNode()) { 
-                Debug.Log("On top of Node !");
-            } else { 
-                Debug.Log("Not on top of Node ! :(");
-            }
+            // if(OnTopOfNode()) { 
+            //     Debug.Log("On top of Node !");
+            // } else { 
+            //     Debug.Log("Not on top of Node ! :(");
+            // }
             // Only display create edge when we are on top of a node
 
 

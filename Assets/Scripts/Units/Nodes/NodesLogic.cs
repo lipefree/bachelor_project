@@ -30,11 +30,8 @@ public class NodesLogic : MonoBehaviour
 
     void OnMouseDrag() {
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
-        Vector3 ScreenPosition = 
-            new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance);
-        Vector3 NewWorldPosition = 
-            mainCamera.ScreenToWorldPoint(ScreenPosition);
-        transform.position = NewWorldPosition;
+        
+        transform.position = GetMousePosition();
     }
 
     // Create new edge
@@ -49,14 +46,16 @@ public class NodesLogic : MonoBehaviour
 
     }
 
-    //TODO: Find how to return functions
     public Func<int> DistributionFunction() 
     {
         return () => 0;
     }
 
-    public int test() { 
-        return 0;
+    private Vector3 GetMousePosition() { 
+        Vector3 ScreenPosition = 
+            new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance);
+        
+        return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 
 }
