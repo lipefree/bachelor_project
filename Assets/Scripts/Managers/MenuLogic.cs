@@ -33,8 +33,6 @@ public class MenuLogic : MonoBehaviour
 
         node = Instantiate(nodePrefab, NewWorldPosition, Quaternion.identity);
 
-        
-
         //destroy parent (menu windows in this case)
         Destroy(transform.parent.gameObject);
     }

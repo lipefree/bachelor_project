@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodePrefab: {fileID: 2646546752226290571, guid: ea209b3917ce29745b928cd3f9e80667, type: 3}
-  edgePrefab: {fileID: 3613182818588924938, guid: 2dd6d2c6b0ad707489d1a95c403db47f, type: 3}
+  edgePrefab: {fileID: 2104504935002933741, guid: 5e45c65213e1f25418ea6962e5a2d079, type: 3}
 --- !u!1 &8263337729338453603
 GameObject:
   m_ObjectHideFlags: 0

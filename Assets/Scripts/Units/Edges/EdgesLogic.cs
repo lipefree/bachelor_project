@@ -36,15 +36,13 @@ public class EdgesLogic : MonoBehaviour
 
         double scale = Math.Sqrt(x*x + y*y);
 
-        Debug.Log("scale : " + scale);
-
 
         transform.localScale = new Vector3((float)scale, 1, 1); 
     }
 
     void OnMouseDrag() 
     {
-        Debug.Log("detect drag from edge");
+        
     }
     
     private Vector3 GetMousePosition() { 

@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using System;
  
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -11,11 +12,16 @@ public class arrowGeneration : MonoBehaviour
     public float stemWidth;
     public float tipLength;
     public float tipWidth;
- 
+
+    private bool edgeBuilding;
+
     [System.NonSerialized]
     public List<Vector3> verticesList;
     [System.NonSerialized]
     public List<int> trianglesList;
+
+    private Camera mainCamera;
+    private float CameraZDistance;
  
     Mesh mesh;
  
@@ -24,11 +30,51 @@ public class arrowGeneration : MonoBehaviour
         //make sure Mesh Renderer has a material
         mesh = new Mesh();
         this.GetComponent<MeshFilter>().mesh = mesh;
+
+        mainCamera = Camera.main;
+        CameraZDistance = 
+            mainCamera.WorldToScreenPoint(transform.position).z;
+
+        edgeBuilding = true;
     }
  
     void Update()
+    {   
+        if(edgeBuilding) { 
+            transformEdge();
+            GenerateArrow(new Vector3(0,0,0));
+        }
+        
+    }
+
+    void OnMouseDown()
+    { 
+        edgeBuilding = false;
+
+    }
+
+    // Transform the edge so that the tip of the arrow follows the mouse
+    // TODO: This function should also be called when we move the node attached to the tip
+    void transformEdge() 
     {
-        GenerateArrow(new Vector3(0,0,0));
+        //TODO: put this section elsewhere when test are finished
+
+        //scale the edge
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        float x = Math.Abs(mousePosition.x - transform.position.x);
+        float y = Math.Abs(mousePosition.y - transform.position.y);
+
+        double scale = Math.Sqrt(x*x + y*y);
+
+        stemLength = (float)scale - tipLength;
+
+        //rotate the edge
+        Vector2 direction = mousePosition - transform.position;
+
+        float angle = Vector2.SignedAngle(Vector2.right, direction);
+        transform.eulerAngles = new Vector3 (0, 0, angle);
+
     }
  
     //arrow is generated starting at Vector3.zero
@@ -57,7 +103,7 @@ public class arrowGeneration : MonoBehaviour
         trianglesList.Add(2);
         
         //tip setup
-        Vector3 tipOrigin = stemLength*Vector3.right;
+        Vector3 tipOrigin = stemOrigin + stemLength*Vector3.right;
         float tipHalfWidth = tipWidth/2;
  
         //tip points
@@ -73,5 +119,13 @@ public class arrowGeneration : MonoBehaviour
         //assign lists to mesh.
         mesh.vertices = verticesList.ToArray();
         mesh.triangles = trianglesList.ToArray();
+    }
+
+    private Vector3 GetMousePosition() 
+    { 
+        Vector3 ScreenPosition = 
+            new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance);
+        
+        return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 }
