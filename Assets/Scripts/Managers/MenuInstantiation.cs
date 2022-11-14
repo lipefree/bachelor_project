@@ -35,13 +35,11 @@ public class MenuInstantiation : MonoBehaviour
             // Find all UI elements for the menu and position them at the position of the mouse
             PlaceUI();
 
-            // if(OnTopOfNode()) { 
-            //     Debug.Log("On top of Node !");
-            // } else { 
-            //     Debug.Log("Not on top of Node ! :(");
-            // }
-            // Only display create edge when we are on top of a node
-
+            if(OnTopOfNode()) { 
+                Debug.Log("On top");
+            } else { 
+                Debug.Log("Not on top");
+            }
 
         }
     }
@@ -49,7 +47,7 @@ public class MenuInstantiation : MonoBehaviour
     void PlaceUI() { 
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("Menu");
          
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos); //write the output to anchoredPos
         foreach(GameObject obj in menuWindow) {
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0);
         }
@@ -58,9 +56,11 @@ public class MenuInstantiation : MonoBehaviour
     bool OnTopOfNode() { 
         GameObject[] nodes = GameObject.FindGameObjectsWithTag("Node");
         foreach(GameObject node in nodes) { 
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Debug.Log("node position : " + node.transform.position);
-            Debug.Log("Mouse position : " + anchoredPos);
-            if(Vector3.Distance(anchoredPos, node.transform.position) < 0.5) { //TODO: 0.5 is a guess, getting a proper function that check if we are on top of is preferable
+            Debug.Log("Mouse position : " + Input.mousePosition);
+            Debug.Log("World position : " + worldPosition);
+            if(Vector2.Distance(worldPosition, node.transform.position) < 0.5) { //TODO: 0.5 is a guess, getting a proper function that check if we are on top of is preferable
                 return true;
             }  
         }

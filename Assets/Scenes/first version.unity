@@ -742,6 +742,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: arrowSprite
       objectReference: {fileID: 0}
+    - target: {fileID: 3613182818588924938, guid: 2dd6d2c6b0ad707489d1a95c403db47f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5670626311129219807, guid: 2dd6d2c6b0ad707489d1a95c403db47f, type: 3}
       propertyPath: m_Size.x
       value: 3.711537
