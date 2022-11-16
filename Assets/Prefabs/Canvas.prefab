@@ -183,6 +183,38 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4051354142020124922}
     m_Modifications:
+    - target: {fileID: 2787341152478505354, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2787341152478505354, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2787341152478505354, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2787341152478505354, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5133830133930273432, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_TagString
+      value: EdgeButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352138666942230092, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6132076
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352138666942230092, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6132076
+      objectReference: {fileID: 0}
+    - target: {fileID: 5352138666942230092, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6132076
+      objectReference: {fileID: 0}
     - target: {fileID: 8263337728985115834, guid: e3b4c53040c8e7a4898fade6f903cf4c, type: 3}
       propertyPath: m_Name
       value: Menu

@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
 
 public class MenuInstantiation : MonoBehaviour
 {
@@ -35,34 +38,42 @@ public class MenuInstantiation : MonoBehaviour
             // Find all UI elements for the menu and position them at the position of the mouse
             PlaceUI();
 
-            if(OnTopOfNode()) { 
-                Debug.Log("On top");
-            } else { 
-                Debug.Log("Not on top");
-            }
 
         }
     }
 
     void PlaceUI() { 
+
+        //Center UI
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("Menu");
          
         RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos); //write the output to anchoredPos
         foreach(GameObject obj in menuWindow) {
+            Debug.Log(obj.name);
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0);
         }
+
+        //Deactivate button "Create edge" if we are not on top of a Node
+
+        if(!OnTopOfNode()) { 
+            Button edgeButton = GameObject.FindGameObjectWithTag("EdgeButton").GetComponent<Button>();
+            edgeButton.enabled = false;
+            edgeButton.GetComponent<Image>().color = Color.clear;
+            var text = edgeButton.GetComponentInChildren<TextMeshProUGUI>();
+            text.enabled = false;
+        }
+
     }
 
     bool OnTopOfNode() { 
-        GameObject[] nodes = GameObject.FindGameObjectsWithTag("Node");
-        foreach(GameObject node in nodes) { 
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Debug.Log("node position : " + node.transform.position);
-            Debug.Log("Mouse position : " + Input.mousePosition);
-            Debug.Log("World position : " + worldPosition);
-            if(Vector2.Distance(worldPosition, node.transform.position) < 0.5) { //TODO: 0.5 is a guess, getting a proper function that check if we are on top of is preferable
-                return true;
-            }  
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit hit;
+        if(Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(mousePosition, Vector3.back, out hit, Mathf.Infinity) ) { // foward is enough but we also check back because we may want another system for overlapping
+            if(hit.collider != null) {
+                if(hit.collider.gameObject.tag.Equals("Node")) {
+                    return true;
+                }
+            }
         }
 
         return false;
