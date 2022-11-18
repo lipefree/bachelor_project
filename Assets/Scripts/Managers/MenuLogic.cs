@@ -39,21 +39,24 @@ public class MenuLogic : MonoBehaviour
 
     public void CreateEdge() 
     {   
+        //Center the begining of the edge according to the center of the node on top
         Vector3 NewWorldPosition = GetMousePosition();
-
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 UICenterPosition = mainCamera.ScreenToWorldPoint(this.transform.position);
         RaycastHit hit;
-        if(Physics.Raycast(mousePosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(mousePosition, Vector3.back, out hit, Mathf.Infinity) ) {
+        Transform parentNode = null;
+        if(Physics.Raycast(UICenterPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(UICenterPosition, Vector3.back, out hit, Mathf.Infinity) ) {
+            Debug.Log("raycast hit");
             if(hit.collider != null) { 
                 if(hit.collider.gameObject.tag.Equals("Node")) { 
-                    NewWorldPosition = hit.collider.gameObject.transform.position + new Vector3 (0,0,-1); // Centers it on the center of the node
+                    parentNode = hit.collider.gameObject.transform;
+                    NewWorldPosition = parentNode.position + new Vector3 (0,0,1); // Centers it on the center of the node
                 }
             }
-        }
+        } 
 
-        edge = Instantiate(edgePrefab, NewWorldPosition, Quaternion.identity);
+        edge = Instantiate(edgePrefab, NewWorldPosition, Quaternion.identity, parentNode);
 
-        //destroy parent (menu windows in this case)
+        //destroy parent (menu window in this case)
         Destroy(transform.parent.gameObject);
     }
 

@@ -49,12 +49,10 @@ public class MenuInstantiation : MonoBehaviour
          
         RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos); //write the output to anchoredPos
         foreach(GameObject obj in menuWindow) {
-            Debug.Log(obj.name);
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0);
         }
 
         //Deactivate button "Create edge" if we are not on top of a Node
-
         if(!OnTopOfNode()) { 
             Button edgeButton = GameObject.FindGameObjectWithTag("EdgeButton").GetComponent<Button>();
             edgeButton.enabled = false;

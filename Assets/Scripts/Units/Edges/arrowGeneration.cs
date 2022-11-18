@@ -13,7 +13,7 @@ public class arrowGeneration : MonoBehaviour
     public float tipLength;
     public float tipWidth;
 
-    private bool edgeBuilding;
+    public bool edgeBuilding;
 
     [System.NonSerialized]
     public List<Vector3> verticesList;
@@ -22,6 +22,8 @@ public class arrowGeneration : MonoBehaviour
 
     private Camera mainCamera;
     private float CameraZDistance;
+
+    public BoxCollider boxCollider;
  
     Mesh mesh;
  
@@ -41,36 +43,57 @@ public class arrowGeneration : MonoBehaviour
     void Update()
     {   
         if(edgeBuilding) { 
-            transformEdge();
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            transformEdge(mousePosition, 0);
             GenerateArrow(new Vector3(0,0,0));
         }
+
+        this.transform.position = this.transform.parent.position; // Follow node
         
     }
 
     void OnMouseDown()
-    { 
-        edgeBuilding = false;
-
+    {   
+        Vector3 NewWorldPosition = GetMousePosition();
+        RaycastHit hit;
+        Transform parentNode = null;
+        if(Physics.Raycast(NewWorldPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(NewWorldPosition, Vector3.back, out hit, Mathf.Infinity) ) {
+            Debug.Log("raycast hit");
+            if(hit.collider != null) { 
+                if(hit.collider.gameObject.tag.Equals("Node")) { 
+                    //adjust the tip to point the center of the node
+                    Transform nodeTransform = hit.collider.gameObject.transform;
+                    edgeBuilding = false;
+                    //Extra update in case we are in between updates
+                    Debug.Log("Scale is " + nodeTransform.localScale.x);
+                    transformEdge(nodeTransform.position, -nodeTransform.localScale.x/2); //Adjust to point just the outside of the node
+                    GenerateArrow(new Vector3(0,0,0));
+                }
+            }
+        } 
     }
 
     // Transform the edge so that the tip of the arrow follows the mouse
     // TODO: This function should also be called when we move the node attached to the tip
-    void transformEdge() 
+    void transformEdge(Vector3 goalPosition, float adjustStemLength) 
     {
         //TODO: put this section elsewhere when test are finished
 
         //scale the edge
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        float x = Math.Abs(mousePosition.x - transform.position.x);
-        float y = Math.Abs(mousePosition.y - transform.position.y);
+        float x = Math.Abs(goalPosition.x - transform.position.x);
+        float y = Math.Abs(goalPosition.y - transform.position.y);
 
         double scale = Math.Sqrt(x*x + y*y);
 
-        stemLength = (float)scale - tipLength;
+        stemLength = (float)scale - tipLength + adjustStemLength;
+
+        float nodeSize = 1f; 
+        boxCollider.size = new Vector3(stemLength + tipLength , stemWidth, 10);
+        boxCollider.center = new Vector3(Math.Abs(stemLength + tipLength + nodeSize)/2, 0, 0);
 
         //rotate the edge
-        Vector2 direction = mousePosition - transform.position;
+        Vector2 direction = goalPosition - transform.position;
 
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3 (0, 0, angle);

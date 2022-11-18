@@ -30,20 +30,25 @@ public class NodesLogic : MonoBehaviour
 
     void OnMouseDrag() {
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
-        
         transform.position = GetMousePosition();
-    }
 
-    // Create new edge
-    void CreateEdge() 
-    { 
+        //Move the edges connected
 
     }
 
-    // Receive new edge
-    void ReceiveEdge() 
-    { 
-
+    void OnMouseDown() { 
+        Vector3 NewWorldPosition = GetMousePosition();
+        Vector3 UICenterPosition = mainCamera.ScreenToWorldPoint(this.transform.position);
+        RaycastHit hit;
+        Transform parentNode = null;
+        if(Physics.Raycast(UICenterPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(UICenterPosition, Vector3.back, out hit, Mathf.Infinity) ) {
+            Debug.Log("raycast hit");
+            if(hit.collider != null) { 
+                if(hit.collider.gameObject.tag.Equals("Edge")) { 
+                    Debug.Log("Found edge");
+                }
+            }
+        } 
     }
 
     public Func<int> DistributionFunction() 
