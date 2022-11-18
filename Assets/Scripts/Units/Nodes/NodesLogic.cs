@@ -32,16 +32,16 @@ public class NodesLogic : MonoBehaviour
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
         transform.position = GetMousePosition();
 
+        Debug.Log("Node : " + transform.position);
+
         //Move the edges connected
 
     }
 
     void OnMouseDown() { 
         Vector3 NewWorldPosition = GetMousePosition();
-        Vector3 UICenterPosition = mainCamera.ScreenToWorldPoint(this.transform.position);
         RaycastHit hit;
-        Transform parentNode = null;
-        if(Physics.Raycast(UICenterPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(UICenterPosition, Vector3.back, out hit, Mathf.Infinity) ) {
+        if(Physics.Raycast(NewWorldPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(NewWorldPosition, Vector3.back, out hit, Mathf.Infinity) ) {
             Debug.Log("raycast hit");
             if(hit.collider != null) { 
                 if(hit.collider.gameObject.tag.Equals("Edge")) { 

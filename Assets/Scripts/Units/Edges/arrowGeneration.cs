@@ -24,7 +24,11 @@ public class arrowGeneration : MonoBehaviour
     private float CameraZDistance;
 
     public BoxCollider boxCollider;
- 
+
+    private Transform nodeTipTransform;
+    private Vector3 tipOriginPosition;
+    private Transform nodeBaseTransform;
+    private Vector3 baseOriginPosition;
     Mesh mesh;
  
     void Start()
@@ -38,6 +42,9 @@ public class arrowGeneration : MonoBehaviour
             mainCamera.WorldToScreenPoint(transform.position).z;
 
         edgeBuilding = true;
+
+        nodeBaseTransform = transform.parent.transform;
+        baseOriginPosition = nodeBaseTransform.position;
     }
  
     void Update()
@@ -46,27 +53,30 @@ public class arrowGeneration : MonoBehaviour
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transformEdge(mousePosition, 0);
             GenerateArrow(new Vector3(0,0,0));
-        }
+        } else { 
+            // Follow both nodes (tip and base)
 
-        this.transform.position = this.transform.parent.position; // Follow node
-        
+            Debug.Log("edge : "+ (nodeBaseTransform.position));
+            transformEdge2(nodeBaseTransform.position - baseOriginPosition, nodeTipTransform.position, 0);
+        }
     }
 
     void OnMouseDown()
     {   
         Vector3 NewWorldPosition = GetMousePosition();
         RaycastHit hit;
-        Transform parentNode = null;
+   
         if(Physics.Raycast(NewWorldPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(NewWorldPosition, Vector3.back, out hit, Mathf.Infinity) ) {
             Debug.Log("raycast hit");
             if(hit.collider != null) { 
                 if(hit.collider.gameObject.tag.Equals("Node")) { 
                     //adjust the tip to point the center of the node
-                    Transform nodeTransform = hit.collider.gameObject.transform;
+                    nodeTipTransform = hit.collider.gameObject.transform;
+                    tipOriginPosition = nodeTipTransform.position;
                     edgeBuilding = false;
                     //Extra update in case we are in between updates
-                    Debug.Log("Scale is " + nodeTransform.localScale.x);
-                    transformEdge(nodeTransform.position, -nodeTransform.localScale.x/2); //Adjust to point just the outside of the node
+                    Debug.Log("Scale is " + nodeTipTransform.localScale.x);
+                    transformEdge(nodeTipTransform.position, -nodeTipTransform.localScale.x/2); //Adjust to point just the outside of the node
                     GenerateArrow(new Vector3(0,0,0));
                 }
             }
@@ -80,7 +90,6 @@ public class arrowGeneration : MonoBehaviour
         //TODO: put this section elsewhere when test are finished
 
         //scale the edge
-
         float x = Math.Abs(goalPosition.x - transform.position.x);
         float y = Math.Abs(goalPosition.y - transform.position.y);
 
@@ -98,6 +107,29 @@ public class arrowGeneration : MonoBehaviour
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3 (0, 0, angle);
 
+    }
+
+    void transformEdge2(Vector3 basePosition, Vector3 tipPositioin, float adjustStemLength) { 
+        
+        //scale the edge
+        float x = Math.Abs(tipPositioin.x - transform.position.x);
+        float y = Math.Abs(tipPositioin.y - transform.position.y);
+
+        double scale = Math.Sqrt(x*x + y*y);
+
+        stemLength = (float)scale - tipLength + adjustStemLength;
+
+        float nodeSize = 1f; 
+        boxCollider.size = new Vector3(stemLength + tipLength , stemWidth, 10);
+        boxCollider.center = new Vector3(Math.Abs(stemLength + tipLength + nodeSize)/2, 0, 0);
+
+        //rotate the edge
+        Vector2 direction = tipPositioin - transform.position;
+
+        float angle = Vector2.SignedAngle(Vector2.right, direction);
+        transform.eulerAngles = new Vector3 (0, 0, angle);
+
+        GenerateArrow(basePosition);
     }
  
     //arrow is generated starting at Vector3.zero
