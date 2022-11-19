@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2104504935002933747}
   - component: {fileID: 2104504935002933740}
   - component: {fileID: 2104504935002933744}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: edgeMesh
   m_TagString: Edge
   m_Icon: {fileID: 0}

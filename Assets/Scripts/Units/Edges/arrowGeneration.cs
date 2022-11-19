@@ -55,14 +55,13 @@ public class arrowGeneration : MonoBehaviour
             GenerateArrow(new Vector3(0,0,0));
         } else { 
             // Follow both nodes (tip and base)
-
-            Debug.Log("edge : "+ (nodeBaseTransform.position));
-            transformEdge2(nodeBaseTransform.position - baseOriginPosition, nodeTipTransform.position, 0);
+            transformEdge2(nodeBaseTransform.position - baseOriginPosition, nodeTipTransform.position, -nodeTipTransform.localScale.x/2);
         }
     }
 
     void OnMouseDown()
     {   
+        Debug.Log("Click on edge");
         Vector3 NewWorldPosition = GetMousePosition();
         RaycastHit hit;
    
@@ -75,7 +74,6 @@ public class arrowGeneration : MonoBehaviour
                     tipOriginPosition = nodeTipTransform.position;
                     edgeBuilding = false;
                     //Extra update in case we are in between updates
-                    Debug.Log("Scale is " + nodeTipTransform.localScale.x);
                     transformEdge(nodeTipTransform.position, -nodeTipTransform.localScale.x/2); //Adjust to point just the outside of the node
                     GenerateArrow(new Vector3(0,0,0));
                     this.transform.position = nodeBaseTransform.position;
@@ -121,7 +119,7 @@ public class arrowGeneration : MonoBehaviour
         stemLength = (float)scale - tipLength + adjustStemLength;
 
         float nodeSize = 1f; 
-        boxCollider.size = new Vector3(stemLength + tipLength , stemWidth, 10);
+        boxCollider.size = new Vector3(stemLength + tipLength , stemWidth, 0);
         boxCollider.center = new Vector3(Math.Abs(stemLength + tipLength + nodeSize)/2, 0, 0);
 
         //rotate the edge
