@@ -78,6 +78,7 @@ public class arrowGeneration : MonoBehaviour
                     Debug.Log("Scale is " + nodeTipTransform.localScale.x);
                     transformEdge(nodeTipTransform.position, -nodeTipTransform.localScale.x/2); //Adjust to point just the outside of the node
                     GenerateArrow(new Vector3(0,0,0));
+                    this.transform.position = nodeBaseTransform.position;
                 }
             }
         } 
@@ -129,7 +130,7 @@ public class arrowGeneration : MonoBehaviour
         float angle = Vector2.SignedAngle(Vector2.right, direction);
         transform.eulerAngles = new Vector3 (0, 0, angle);
 
-        GenerateArrow(basePosition);
+        GenerateArrow(new Vector3(0,0,0));
     }
  
     //arrow is generated starting at Vector3.zero
