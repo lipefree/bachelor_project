@@ -45,7 +45,6 @@ public class MenuLogic : MonoBehaviour
         RaycastHit hit;
         Transform parentNode = null;
         if(Physics.Raycast(UICenterPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(UICenterPosition, Vector3.back, out hit, Mathf.Infinity) ) {
-            Debug.Log("raycast hit");
             if(hit.collider != null) { 
                 if(hit.collider.gameObject.tag.Equals("Node")) { 
                     parentNode = hit.collider.gameObject.transform;

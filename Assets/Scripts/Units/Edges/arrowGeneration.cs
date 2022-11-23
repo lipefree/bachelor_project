@@ -61,12 +61,10 @@ public class arrowGeneration : MonoBehaviour
 
     void OnMouseDown()
     {   
-        Debug.Log("Click on edge");
         Vector3 NewWorldPosition = GetMousePosition();
         RaycastHit hit;
    
         if(Physics.Raycast(NewWorldPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(NewWorldPosition, Vector3.back, out hit, Mathf.Infinity) ) {
-            Debug.Log("raycast hit");
             if(hit.collider != null) { 
                 if(hit.collider.gameObject.tag.Equals("Node")) { 
                     //adjust the tip to point the center of the node
@@ -174,7 +172,10 @@ public class arrowGeneration : MonoBehaviour
         mesh.vertices = verticesList.ToArray();
         mesh.triangles = trianglesList.ToArray();
     }
-
+    public (Transform, Transform) getNodesTransform() {
+        return (nodeBaseTransform, nodeTipTransform);
+    }
+    
     private Vector3 GetMousePosition() 
     { 
         Vector3 ScreenPosition = 

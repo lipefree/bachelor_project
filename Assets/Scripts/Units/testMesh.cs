@@ -76,7 +76,5 @@ public class testMesh : MonoBehaviour
         //assign lists to mesh.
         mesh.vertices = verticesList.ToArray();
         mesh.triangles = trianglesList.ToArray();
-
-        Debug.Log(stemOrigin + "  "+ transform.position);
     }
 }

@@ -29,29 +29,12 @@ public class NodesLogic : MonoBehaviour
     }
 
     void OnMouseDrag() {
-        Debug.Log("Drag node");
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
         transform.position = GetMousePosition();
         //Move the edges connected
 
     }
 
-    void OnMouseDown() { 
-
-        Debug.Log("Click on node");
-        // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
-        transform.position = GetMousePosition();
-        Vector3 NewWorldPosition = GetMousePosition();
-        RaycastHit hit;
-        if(Physics.Raycast(NewWorldPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(NewWorldPosition, Vector3.back, out hit, Mathf.Infinity) ) {
-            Debug.Log("raycast hit");
-            if(hit.collider != null) { 
-                if(hit.collider.gameObject.tag.Equals("Edge")) { 
-                    Debug.Log("Found edge");
-                }
-            }
-        } 
-    }
 
     public Func<int> DistributionFunction() 
     {
