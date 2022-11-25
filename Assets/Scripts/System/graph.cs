@@ -11,11 +11,6 @@ public class graph : MonoBehaviour
     void Start()
     {
         nodes = new List<GameObject>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
 
         foreach(GameObject edge in edges) { 
@@ -23,9 +18,29 @@ public class graph : MonoBehaviour
             var (n1Transform, n2Transform) = scrip.getNodesTransform();
             var (n1, n2) = (n1Transform.gameObject, n2Transform.gameObject);
 
-            nodes.Add(n1);
-            nodes.Add(n2);
+            if(!nodes.Contains(n1)){
+                nodes.Add(n1);
+            }
+
+            if(!nodes.Contains(n2)){
+                nodes.Add(n2);
+            }
         }
 
+        printNodes(nodes);
+        Debug.Log("Size of nodes is "+ nodes.Count);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    private void printNodes(List<GameObject> l) 
+    {
+        foreach(GameObject g in l) { 
+            Debug.Log(g);
+        }
     }
 }
