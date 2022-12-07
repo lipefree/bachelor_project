@@ -10,25 +10,25 @@ public class graph : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        nodes = new List<GameObject>();
-        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
+        // nodes = new List<GameObject>();
+        // GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
 
-        foreach(GameObject edge in edges) { 
-            var scrip = edge.GetComponent<arrowGeneration>();
-            var (n1Transform, n2Transform) = scrip.getNodesTransform();
-            var (n1, n2) = (n1Transform.gameObject, n2Transform.gameObject);
+        // foreach(GameObject edge in edges) { 
+        //     var scrip = edge.GetComponent<arrowGeneration>();
+        //     var (n1Transform, n2Transform) = scrip.getNodesTransform();
+        //     var (n1, n2) = (n1Transform.gameObject, n2Transform.gameObject);
 
-            if(!nodes.Contains(n1)){
-                nodes.Add(n1);
-            }
+        //     if(!nodes.Contains(n1)){
+        //         nodes.Add(n1);
+        //     }
 
-            if(!nodes.Contains(n2)){
-                nodes.Add(n2);
-            }
-        }
+        //     if(!nodes.Contains(n2)){
+        //         nodes.Add(n2);
+        //     }
+        // }
 
-        printNodes(nodes);
-        Debug.Log("Size of nodes is "+ nodes.Count);
+        // printNodes(nodes);
+        // Debug.Log("Size of nodes is "+ nodes.Count);
     }
 
     // Update is called once per frame

@@ -12,7 +12,6 @@ public class arrowGeneration : MonoBehaviour
     public float stemWidth;
     public float tipLength;
     public float tipWidth;
-
     public bool edgeBuilding;
 
     [System.NonSerialized]
@@ -172,8 +171,8 @@ public class arrowGeneration : MonoBehaviour
         mesh.vertices = verticesList.ToArray();
         mesh.triangles = trianglesList.ToArray();
     }
-    public (Transform, Transform) getNodesTransform() {
-        return (nodeBaseTransform, nodeTipTransform);
+    public List<Transform> getNodesTransform() {
+        return new List<Transform>{nodeBaseTransform, nodeTipTransform};
     }
     
     private Vector3 GetMousePosition() 

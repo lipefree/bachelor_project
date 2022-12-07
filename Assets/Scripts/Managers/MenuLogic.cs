@@ -1,5 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Unity.Jobs;
+// using UniRx;
 using UnityEngine;
 
 public class MenuLogic : MonoBehaviour
@@ -11,12 +15,23 @@ public class MenuLogic : MonoBehaviour
     private GameObject edge;
     private Camera mainCamera;
     private float CameraZDistance;
+
+    private UnityView view;
+
+    private InferPresenter presenter;
+
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = Camera.main;
         CameraZDistance = 
             mainCamera.WorldToScreenPoint(transform.position).z;
+
+
+        //Logic for communication between View and Infer.net
+        presenter = new InferPresenter();
+        view = new UnityView(presenter);
+        presenter.setView(view);
 
     }
  
@@ -37,7 +52,7 @@ public class MenuLogic : MonoBehaviour
         Destroy(transform.parent.gameObject);
     }
 
-    public void CreateEdge() 
+    public async void CreateEdge() 
     {   
         //Center the begining of the edge according to the center of the node on top
         Vector3 NewWorldPosition = GetMousePosition();
@@ -57,6 +72,15 @@ public class MenuLogic : MonoBehaviour
 
         //destroy parent (menu window in this case)
         Destroy(transform.parent.gameObject);
+
+        //Await call not to block the UI
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
+        var couple = edges.ToList().Select(edge => (edge, edge.GetComponent<arrowGeneration>())).ToList();
+        await updateView(couple);
+    }
+
+    private async Task updateView(List<(GameObject, arrowGeneration)> edges) {
+        await Task.Run(() => this.view.onNewEdge(edges));
     }
 
     private Vector3 GetMousePosition() { 
@@ -66,3 +90,5 @@ public class MenuLogic : MonoBehaviour
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 }
+
+
