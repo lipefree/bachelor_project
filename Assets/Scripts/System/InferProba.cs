@@ -12,16 +12,12 @@ class InferProba
         proba = Variable.Bernoulli(0.5);
     }
 
-    public object getProba(List<(GameObject, arrowGeneration)> edges) 
+    public object getProba(List<List<GameObject>> nodes) 
     {
         //Get all informations to perform calculations
-
-        var nodes = getListNodes(edges); // Change to graph
-        
         var roots = getRoots(nodes);
         var notRoots = nodes.SelectMany(x => x).Except(roots).ToList();
 
-        printListList(nodes);
         Debug.Log("Number of roots :" + roots);
         notRoots.ForEach(nt => Debug.Log("Size of parents is : " + getParents(nodes, nt).Count()));
 
@@ -32,22 +28,6 @@ class InferProba
 
         //Still prototyping, we just return something for MVP
         return engine.Infer(proba); // <- 
-    }
-
-    private List<List<GameObject>> getListNodes(List<(GameObject, arrowGeneration)> edges)
-    {
-        var nodes = new List<List<GameObject>>();
-        
-        foreach((GameObject, arrowGeneration) couple in edges) { 
-            var scrip = couple.Item2;
-            var nodesTransform = scrip.getNodesTransform();
-            //There is one unattached edge that will be null
-            if(!nodesTransform.Contains(null)) {
-                nodes.Add(nodesTransform.Select(nt => nt.gameObject).ToList());
-            }
-        }
-
-        return nodes;
     }
 
     private Variable<bool> createInference(List<GameObject> parents, GameObject node) 
@@ -74,6 +54,7 @@ class InferProba
 
     private void printListList(List<List<GameObject>> nodes)
     {
-        nodes.ForEach(node => Debug.Log("[" + node[0] + "," + node[1]+ "], "));
+        // nodes.ForEach(node => Debug.Log("[" + node[0] + "," + node[1]+ "], "));
     }
+
 }

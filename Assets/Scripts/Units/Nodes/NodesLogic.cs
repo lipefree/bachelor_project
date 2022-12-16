@@ -31,8 +31,6 @@ public class NodesLogic : MonoBehaviour
     void OnMouseDrag() {
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
         transform.position = GetMousePosition();
-        //Move the edges connected
-
     }
 
 

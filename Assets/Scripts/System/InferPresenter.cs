@@ -12,8 +12,8 @@ public class InferPresenter {
 
     public void setView(UnityView view) { this.view = view;}
 
-    public void updateNodes(List<(GameObject, arrowGeneration)> edges) { // This functions needs to be more precise maybe
-        object newProba = inferEngine.getProba(edges);
+    public void updateNodes(List<List<GameObject>> nodes) { // This functions needs to be more precise maybe
+        object newProba = inferEngine.getProba(nodes);
 
         Debug.Log(newProba);
     }

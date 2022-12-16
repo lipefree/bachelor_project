@@ -17,10 +17,8 @@ public class MenuInstantiation : MonoBehaviour
     private Vector2 anchoredPos;
     void Start()
     {
-
         //We have to find the main canvas but we can't link real object to prefabs, so we have to find it at the instantiation 
         m_parent = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<RectTransform>();
-
     }
 
     // Update is called once per frame
@@ -37,7 +35,6 @@ public class MenuInstantiation : MonoBehaviour
 
             // Find all UI elements for the menu and position them at the position of the mouse
             PlaceUI();
-
 
         }
     }
