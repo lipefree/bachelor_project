@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,7 @@ public class MenuLogic : MonoBehaviour
             return;
         }
 
+
         edge = Instantiate(edgePrefab, centerPosition, Quaternion.identity, parentNode);
 
         //destroy parent (menu window in this case)
@@ -101,6 +103,8 @@ public class MenuLogic : MonoBehaviour
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
     }
+
+    
 }
 
 

@@ -18,13 +18,13 @@ class InferProba
         var roots = getRoots(nodes);
         var notRoots = nodes.SelectMany(x => x).Except(roots).ToList();
 
-        Debug.Log("Number of roots :" + roots);
+        // Debug.Log("Number of roots :" + roots);
         notRoots.ForEach(nt => Debug.Log("Size of parents is : " + getParents(nodes, nt).Count()));
 
         //Calculate proba for each nonRoots
         var probas = notRoots.Select(nt => createInference(getParents(nodes, nt), nt)).ToList();
 
-        probas.ForEach(p => Debug.Log("proba is : " + engine.Infer(p))); //< -
+        // probas.ForEach(p => Debug.Log("proba is : " + engine.Infer(p))); //< -
 
         //Still prototyping, we just return something for MVP
         return engine.Infer(proba); // <- 
@@ -55,6 +55,8 @@ class InferProba
     private void printListList(List<List<GameObject>> nodes)
     {
         // nodes.ForEach(node => Debug.Log("[" + node[0] + "," + node[1]+ "], "));
+
+        var node = new TreeNode(null, 0);
     }
 
 }

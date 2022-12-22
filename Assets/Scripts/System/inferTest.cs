@@ -26,6 +26,7 @@ public class inferTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var test = new TreeNode(null , 0);
         Debug.Log("Probability both coins are heads: "+ test);
     }
 }

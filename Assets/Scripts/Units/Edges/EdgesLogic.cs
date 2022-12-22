@@ -3,7 +3,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
- 
+using System.Linq;
+
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 public class EdgesLogic : MonoBehaviour
@@ -69,13 +70,31 @@ public class EdgesLogic : MonoBehaviour
                     //adjust the tip to point the center of the node
                     nodeTipTransform = hit.collider.gameObject.transform;
                     tipOriginPosition = nodeTipTransform.position;
+                    if(!remainUncyclic(nodeBaseTransform.gameObject)) {
+                        Debug.Log("Can't attached to this node or the graph will become cyclic");
+                        return;
+                    }
                     edgeBuilding = false;
                     //Extra update in case we are in between updates
                     transformEdge(nodeTipTransform.position, -nodeTipTransform.localScale.x/2, 10); //Adjust to point just the outside of the node
                     this.transform.position = nodeBaseTransform.position;
-                }
+                } 
             }
-        } 
+        } else { 
+            mesh.Clear();
+            Destroy(this.gameObject);
+        }
+    }
+
+    private Boolean remainUncyclic(GameObject tip) { 
+        //Check if creating this edge will create a cyclic graph
+        var edges = getListNodes();
+        if(edges.Count == 0) { //First edge created fix
+            return true;
+        }
+        edges.Add(new List<GameObject>{nodeBaseTransform.gameObject, tip});
+        var graph = new Graph(edges);
+        return !graph.isCyclic();
     }
 
     // Transform the edge so that the tip of the arrow follows the mouse
@@ -146,6 +165,7 @@ public class EdgesLogic : MonoBehaviour
         mesh.vertices = verticesList.ToArray();
         mesh.triangles = trianglesList.ToArray();
     }
+
     public List<GameObject> getNodesTransform() {
         if(nodeTipTransform == null) {
             return null;
@@ -161,4 +181,11 @@ public class EdgesLogic : MonoBehaviour
         
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
+
+    private List<List<GameObject>> getListNodes()
+    {
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
+        return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
+    }
+    
 }
