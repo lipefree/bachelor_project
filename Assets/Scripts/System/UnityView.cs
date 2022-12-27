@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.ML.Probabilistic.Models;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ public class UnityView
         this.presenter = presenter;
     }
 
-    public void onNewEdge(List<List<GameObject>> nodes) { 
-        presenter.updateNodes(nodes);
+    public void onNewEdge(Graph graph) { 
+        presenter.updateProba(graph);
     }
 }

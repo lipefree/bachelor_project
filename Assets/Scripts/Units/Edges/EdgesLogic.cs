@@ -30,12 +30,16 @@ public class EdgesLogic : MonoBehaviour
     private Transform nodeBaseTransform;
     private Vector3 baseOriginPosition;
     Mesh mesh;
+    private InferPresenter Presenter;
  
     void Start()
     {
         //make sure Mesh Renderer has a material
         mesh = new Mesh();
         this.GetComponent<MeshFilter>().mesh = mesh;
+        this.GetComponent<MeshRenderer>().material.color = Color.gray;
+
+        Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
 
         mainCamera = Camera.main;
         CameraZDistance = 
@@ -77,7 +81,11 @@ public class EdgesLogic : MonoBehaviour
                     edgeBuilding = false;
                     //Extra update in case we are in between updates
                     transformEdge(nodeTipTransform.position, -nodeTipTransform.localScale.x/2, 10); //Adjust to point just the outside of the node
-                    this.transform.position = nodeBaseTransform.position;
+                    this.transform.position = nodeBaseTransform.position + new Vector3(0,0,1);
+
+                    //Update proba
+
+                    Presenter.updateProba(getListNodes());
                 } 
             }
         } else { 
@@ -87,14 +95,9 @@ public class EdgesLogic : MonoBehaviour
     }
 
     private Boolean remainUncyclic(GameObject tip) { 
-        //Check if creating this edge will create a cyclic graph
         var edges = getListNodes();
-        if(edges.Count == 0) { //First edge created fix
-            return true;
-        }
         edges.Add(new List<GameObject>{nodeBaseTransform.gameObject, tip});
-        var graph = new Graph(edges);
-        return !graph.isCyclic();
+        return Presenter.remainUncyclic(edges);
     }
 
     // Transform the edge so that the tip of the arrow follows the mouse
@@ -187,5 +190,5 @@ public class EdgesLogic : MonoBehaviour
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
     }
-    
+
 }

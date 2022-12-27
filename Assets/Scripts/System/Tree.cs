@@ -69,7 +69,7 @@ public class Graph
                 int time2 = order.Where(tuple => tuple.Item1.Equals(child)).First().Item2;
 
                 if(time2 > time1) {
-                    return true;
+                    return true; // Backward edge detected -> cyclic
                 }
             }
         }
@@ -166,7 +166,18 @@ public class Graph
             }
         }
 
+        this.roots = result;
         return result;
+    }
+
+    public List<TreeNode> getRoots()
+    {
+        return this.roots;
+    }
+
+    public void addNode(TreeNode parent, TreeNode newNode)
+    {
+        
     }
 }
 
@@ -175,6 +186,10 @@ public class TreeNode
     private int value;
     List<TreeNode> parents;
     List<TreeNode> children;
+
+    Variable<bool> Generator;
+
+    List<Variable<bool>> transformator;
 
     public TreeNode(List<TreeNode> parents, int value)
     {
@@ -187,6 +202,8 @@ public class TreeNode
         this.value = 0;
         this.parents = new List<TreeNode>();
         this.children = new List<TreeNode>(); 
+        this.Generator = Variable.Bernoulli(0.5);
+        this.transformator = new List<Variable<bool>>();
     }
 
     public void addChildren(TreeNode child)
@@ -211,5 +228,21 @@ public class TreeNode
         }
         return this.children;
     }
+
+    public void setTransform(Variable<bool> variable)
+    {
+        this.transformator.Add(variable);
+    }
+
+    public void setTransform(List<Variable<bool>> variables)
+    {
+        variables.ForEach(variable => this.transformator.Add(variable));
+    }
+
+    public List<Variable<bool>> getTransform()
+    {
+        return this.transformator;
+    }
+
 
 }

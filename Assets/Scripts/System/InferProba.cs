@@ -12,22 +12,15 @@ class InferProba
         proba = Variable.Bernoulli(0.5);
     }
 
-    public object getProba(List<List<GameObject>> nodes) 
+    public Graph getProba(Graph graph) 
     {
-        //Get all informations to perform calculations
-        var roots = getRoots(nodes);
-        var notRoots = nodes.SelectMany(x => x).Except(roots).ToList();
+        
+        var roots = graph.getRoots();
 
-        // Debug.Log("Number of roots :" + roots);
-        notRoots.ForEach(nt => Debug.Log("Size of parents is : " + getParents(nodes, nt).Count()));
+        roots.ForEach(root => propagate(root));
 
-        //Calculate proba for each nonRoots
-        var probas = notRoots.Select(nt => createInference(getParents(nodes, nt), nt)).ToList();
-
-        // probas.ForEach(p => Debug.Log("proba is : " + engine.Infer(p))); //< -
-
-        //Still prototyping, we just return something for MVP
-        return engine.Infer(proba); // <- 
+        Debug.Log("finished calculation");
+        return graph;
     }
 
     private Variable<bool> createInference(List<GameObject> parents, GameObject node) 
@@ -35,15 +28,19 @@ class InferProba
         return parents.Aggregate(Variable.Bernoulli(0), (z, next) => z | Variable.Bernoulli(0.5));
     }
 
-    private List<GameObject> getRoots(List<List<GameObject>> pairs) 
-    {
-        var listNodes = pairs.SelectMany(x => x).Distinct().ToList(); //get all unique node
-        return listNodes.Where(node => pairs.Aggregate(true, (z, next) => next[1] == node? z && false : z && true)).ToList();
-    }
+    private void propagate(TreeNode node) {
+        if(node == null) {
+            return;
+        }
 
-    private List<GameObject> getParents(List<List<GameObject>> pairs, GameObject node) 
-    {
-        return pairs.Where(pair => pair[1] == node).Select(pair => pair[0]).ToList();
+        node.getChildren().ForEach(child => {
+            child.setTransform(node.getTransform());
+        });
+
+        node.getChildren().ForEach(child => {
+            propagate(child);
+        });
+        
     }
 
     //debug tools
