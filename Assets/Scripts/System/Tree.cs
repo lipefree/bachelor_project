@@ -8,6 +8,7 @@ using UnityEngine;
 public class Graph
 {   
     private List<TreeNode> roots;
+    private Dictionary<GameObject, TreeNode> links;
 
     public Graph(List<TreeNode> roots) 
     {
@@ -49,9 +50,6 @@ public class Graph
         }
     } 
 
-    public void printOrder(List<Tuple<TreeNode, int>> order) {
-        order.ForEach(tup => Debug.Log("[" + tup.Item1.getValue() + " ," + tup.Item2 + "]"));
-    }
 
     public Boolean isCyclic() {
         //We have no roots
@@ -75,36 +73,6 @@ public class Graph
         }
 
         return false;
-    }
-
-    public HashSet<Tuple<TreeNode, TreeNode>> getEdges()
-    {   
-        //TODO: getEdges and getNodes share a lot of code -> reuse it in some way
-        var edges = new HashSet<Tuple<TreeNode, TreeNode>>();
-        var nodes = new HashSet<TreeNode>();
-        var toVisit = new HashSet<TreeNode>();
-
-        foreach(TreeNode node in roots) {
-            toVisit.Add(node);
-        }
-
-        while(toVisit.Any()) {
-            var current = toVisit.First();
-            toVisit.Remove(current);
-            nodes.Add(current);
-            var successor = current.getChildren();
-
-            successor.ForEach(node => edges.Add(new Tuple<TreeNode, TreeNode>(current, node)));
-
-            successor
-                .Where(node => !nodes.Contains(node) && !toVisit.Contains(node))
-                .ToList() // NO foreach method on IEnum type
-                .ForEach(node => toVisit.Add(node));
-            
-        }
-
-        return edges;
-
     }
 
     public HashSet<TreeNode> getNodes() {
@@ -170,37 +138,86 @@ public class Graph
         return result;
     }
 
+    public HashSet<Tuple<TreeNode, TreeNode>> getEdges()
+    {   
+        //TODO: getEdges and getNodes share a lot of code -> reuse it in some way
+        var edges = new HashSet<Tuple<TreeNode, TreeNode>>();
+        var nodes = new HashSet<TreeNode>();
+        var toVisit = new HashSet<TreeNode>();
+
+        foreach(TreeNode node in roots) {
+            toVisit.Add(node);
+        }
+
+        while(toVisit.Any()) {
+            var current = toVisit.First();
+            toVisit.Remove(current);
+            nodes.Add(current);
+            var successor = current.getChildren();
+
+            successor.ForEach(node => edges.Add(new Tuple<TreeNode, TreeNode>(current, node)));
+
+            successor
+                .Where(node => !nodes.Contains(node) && !toVisit.Contains(node))
+                .ToList() // NO foreach method on IEnum type
+                .ForEach(node => toVisit.Add(node));
+            
+        }
+
+        return edges;
+
+    }
+
+    public void printOrder(List<Tuple<TreeNode, int>> order) {
+        order.ForEach(tup => Debug.Log("[" + 0 + " ," + tup.Item2 + "]"));
+    }
+
     public List<TreeNode> getRoots()
     {
         return this.roots;
     }
 
-    public void addNode(TreeNode parent, TreeNode newNode)
+    public bool isNodeRoot(GameObject node, List<List<GameObject>> edges)
+    {   
+        var check = true;
+        foreach(var edge in edges)
+        {
+            if(edge[1] ==node)
+            {
+                check = false;
+            }
+        }
+
+        return check;
+    }
+
+    public List<GameObject> getParents(GameObject node, List<List<GameObject>> edges)
     {
-        
+        var parents = new List<GameObject>();
+        foreach(var edge in edges)
+        {   
+            if(edge[1] == node){
+                parents.Add(edge[0]);
+            }
+        }
+        return parents.Distinct().ToList();
     }
 }
 
 public class TreeNode
 {
-    private int value;
-    List<TreeNode> parents;
     List<TreeNode> children;
-
     Variable<bool> Generator;
-
     List<Variable<bool>> transformator;
+
+    public TreeNode() {
+        this.children = new List<TreeNode>(); 
+        this.Generator = Variable.Bernoulli(0.5);
+        this.transformator = new List<Variable<bool>>();
+    }
 
     public TreeNode(List<TreeNode> parents, int value)
     {
-        this.value = value;
-        this.parents = parents;
-        children = new List<TreeNode>();
-    }
-
-    public TreeNode() {
-        this.value = 0;
-        this.parents = new List<TreeNode>();
         this.children = new List<TreeNode>(); 
         this.Generator = Variable.Bernoulli(0.5);
         this.transformator = new List<Variable<bool>>();
@@ -211,15 +228,6 @@ public class TreeNode
         if(child != null){
             this.children.Add(child);
         } 
-    }
-
-    public void setValue(int value)
-    {
-        this.value = value;
-    }
-
-    public int getValue() {
-        return this.value;
     }
 
     public List<TreeNode> getChildren() {
@@ -243,6 +251,4 @@ public class TreeNode
     {
         return this.transformator;
     }
-
-
 }

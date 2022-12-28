@@ -3136,7 +3136,7 @@ GameObject:
   - component: {fileID: 5367190540866750271}
   - component: {fileID: 3207802920531062436}
   m_Layer: 5
-  m_Name: ProbaPanel (2)
+  m_Name: CreateEdge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -16,6 +16,7 @@ public class NodesLogic : MonoBehaviour
     public GameObject MenuPrefab;
     private GameObject Menu;
     private List<float> probabilities;
+    private string definition;
     private InferPresenter Presenter;
 
     // Start is called before the first frame update
@@ -28,7 +29,7 @@ public class NodesLogic : MonoBehaviour
         Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
 
         //defaults
-        variableName = "A variable";
+        variableName = "variable " + getListNodes().Count;
         probabilities = new List<float>(){0.5f, 0.5f};
         CreateMenu();
 
@@ -73,6 +74,16 @@ public class NodesLogic : MonoBehaviour
         Presenter.updateProba();
     }
 
+    public void setDefinition(string def)
+    {
+        this.definition = def;
+    }
+
+    public string getDefinition()
+    {
+        return this.definition;
+    }
+
     public List<float> getProbabilities()
     {
         return this.probabilities;
@@ -107,13 +118,18 @@ public class NodesLogic : MonoBehaviour
     //TODO: Presenter can't see EdgeLogic namespace for some reasons
     private void updateProba()
     {
-        Presenter.updateProba(getListNodes());
+        Presenter.updateProba(getListEdges());
     }
 
-    private List<List<GameObject>> getListNodes()
+    private List<List<GameObject>> getListEdges()
     {
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
+    }
+
+    private List<GameObject> getListNodes()
+    {
+        return GameObject.FindGameObjectsWithTag("Node").ToList();
     }
 
 }

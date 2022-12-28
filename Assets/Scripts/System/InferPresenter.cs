@@ -7,26 +7,15 @@ using UnityEngine;
 public class InferPresenter : MonoBehaviour
 { 
     InferProba inferEngine;
-    UnityView view;
 
     Graph graph;
 
+    List<List<GameObject>> edges;
+
     void Start() 
     {
-
-    }
-
-    public InferPresenter() { 
+        edges = new List<List<GameObject>>();
         inferEngine = new InferProba();
-    }
-
-    public void setView(UnityView view) { this.view = view;}
-
-    public void updateProba(Graph graph) { // This functions needs to be more precise maybe
-        var newProba = inferEngine.getProba(graph);
-
-        //Update Probaviz
-        Debug.Log(newProba);
     }
 
     //TODO: This overload only exist because we can't see EdgeLogic from here.
@@ -52,6 +41,18 @@ public class InferPresenter : MonoBehaviour
         var newProba = inferEngine.getProba(this.graph);
 
         // Update ProbaViz
+    }
+
+    public bool isNodeRoot(GameObject node, List<List<GameObject>> edges)
+    {   
+        var graph = new Graph(edges);
+        return graph.isNodeRoot(node, edges);
+    }
+
+    public List<GameObject> getParents(GameObject node, List<List<GameObject>> edges)
+    {
+        var graph = new Graph(edges);
+        return graph.getParents(node, edges);
     }
 
     public bool remainUncyclic(List<List<GameObject>> edges)

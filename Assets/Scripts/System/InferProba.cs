@@ -14,7 +14,6 @@ class InferProba
 
     public Graph getProba(Graph graph) 
     {
-        
         var roots = graph.getRoots();
 
         roots.ForEach(root => propagate(root));
@@ -53,7 +52,7 @@ class InferProba
     {
         // nodes.ForEach(node => Debug.Log("[" + node[0] + "," + node[1]+ "], "));
 
-        var node = new TreeNode(null, 0);
+        var node = new TreeNode();
     }
 
 }

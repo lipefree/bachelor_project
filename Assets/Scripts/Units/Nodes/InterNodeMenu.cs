@@ -1,30 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.UI;
 
-public class NodeMenu : MonoBehaviour
-{   
+public class InterNodeMenu : MonoBehaviour
+{
+
     private GameObject node;
+    private RectTransform m_parent;
+
+    public TMP_Text definitionText;
 
     public TMP_Text variableText;
-    public TMP_Text p0Text;
-    public TMP_Text p1Text;
-    public string variableName;
-    public List<float> probabilities;
-    private RectTransform m_parent;
-    private Vector2 anchoredPos;
-    public GameObject edgePrefab;
-    private GameObject edge;
 
+    private GameObject edge;
+    public GameObject edgePrefab;
+    private Vector2 anchoredPos;
+
+    private InferPresenter Presenter;
     // Start is called before the first frame update
     void Start()
     {
         m_parent = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<RectTransform>();
         PlaceUi();
+        Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
     }
 
     // Update is called once per frame
@@ -39,9 +40,8 @@ public class NodeMenu : MonoBehaviour
         variableText.text = node.GetComponent<NodesLogic>().getVariableName();
 
         Debug.Log("Name is : "  + node.GetComponent<NodesLogic>().getVariableName());
-        var probabilities = node.GetComponent<NodesLogic>().getProbabilities();
-        p0Text.text = probabilities[0].ToString();
-        p1Text.text = probabilities[1].ToString();
+        definitionText.text = node.GetComponent<NodesLogic>().getDefinition();
+
     }
 
 
@@ -52,19 +52,12 @@ public class NodeMenu : MonoBehaviour
     }
 
     //TODO: Finish this design : What should the function receive ?
-    public void setProbabilitie0(string proba)
+    public void setDefinition(string definition)
     {   
         Assert.IsNotNull(node);
-        float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
-        node.GetComponent<NodesLogic>().setProbabilitie0(probaF);
+        node.GetComponent<NodesLogic>().setDefinition(definition);
     }   
 
-    public void setProbabilitie1(string proba)
-    {   
-        Assert.IsNotNull(node);
-        float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
-        node.GetComponent<NodesLogic>().setProbabilitie1(probaF);
-    }  
 
     public void CreateEdge()
     {
@@ -76,12 +69,25 @@ public class NodeMenu : MonoBehaviour
             return;
         }
 
-
         edge = Instantiate(edgePrefab, centerPosition, Quaternion.identity, parentNode);
 
         //destroy parent (menu window in this case)
         Destroy(this.gameObject);
 
+    }
+
+    public void RequestParents()
+    {
+        printDebugList(Presenter.getParents(this.node, getListEdges()));
+    }
+
+    private void printDebugList(List<GameObject> list)
+    {   
+        Debug.Log("Parent list : ");
+        foreach(var elem in list)
+        {
+            Debug.Log(elem.GetComponent<NodesLogic>().getVariableName());
+        }
     }
 
     private (Vector3, Transform) findNodeCenter()
@@ -106,5 +112,11 @@ public class NodeMenu : MonoBehaviour
         foreach(GameObject obj in menuWindow) {
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0) + offset;
         }
+    }
+
+    private List<List<GameObject>> getListEdges()
+    {
+        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
+        return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
     }
 }
