@@ -75,8 +75,13 @@ public class NodesLogic : MonoBehaviour
     }
 
     public void setDefinition(string def)
-    {
+    {   
+        //Check if definition is correct
+        var check = Presenter.checkDefinition(this.gameObject, def, getListEdges());
+
         this.definition = def;
+
+        //Convert definition to infer.net
     }
 
     public string getDefinition()

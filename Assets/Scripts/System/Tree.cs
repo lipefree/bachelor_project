@@ -202,6 +202,18 @@ public class Graph
         }
         return parents.Distinct().ToList();
     }
+
+    public List<GameObject> getRoots(List<List<GameObject>> edges)
+    {
+        var roots = edges.SelectMany(x => x).Distinct().ToList();
+
+        foreach(var edge in edges)
+        {
+            roots.Remove(edge[1]);
+        }
+
+        return roots;
+    }
 }
 
 public class TreeNode

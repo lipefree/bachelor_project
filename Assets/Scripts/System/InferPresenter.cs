@@ -55,6 +55,11 @@ public class InferPresenter : MonoBehaviour
         return graph.getParents(node, edges);
     }
 
+    public List<GameObject> getRoots(List<List<GameObject>> edges)
+    {
+        return new Graph(edges).getRoots(edges);
+    }
+
     public bool remainUncyclic(List<List<GameObject>> edges)
     {   
         var graph = new Graph(edges);
@@ -64,6 +69,13 @@ public class InferPresenter : MonoBehaviour
         } else { 
             return false;
         }
+    }
+
+    public bool checkDefinition(GameObject node, string definition, List<List<GameObject>> edges)
+    {
+        
+
+        return false;
     }
 
     //TODO: Cant put it here why ?
