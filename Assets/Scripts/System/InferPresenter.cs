@@ -18,6 +18,7 @@ public class InferPresenter : MonoBehaviour
         inferEngine = new InferProba();
     }
 
+    //DEPRECATED : We are calculating at definition, this function should be used for backward only 
     //TODO: This overload only exist because we can't see EdgeLogic from here.
     public async void updateProba(List<List<GameObject>> edges)
     {
@@ -71,12 +72,19 @@ public class InferPresenter : MonoBehaviour
         }
     }
 
-    public bool checkDefinition(GameObject node, string definition, List<List<GameObject>> edges)
+    public bool checkDefinition(string definition, List<string> env)
     {
-        
-
-        return false;
+        var def = new Definition(definition);
+        return def.isValid(env);
     }
+
+    public Variable<bool> interpret(string definition, List<(Variable<bool>, string)> env)
+    {
+        var def = new Definition(definition);
+        return def.interpret(env);
+    }
+
+    
 
     //TODO: Cant put it here why ?
     // private List<List<GameObject>> getListNodes()

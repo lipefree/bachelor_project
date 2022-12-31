@@ -6,12 +6,16 @@
         "UnityEditor.TestRunner",
         "Systems"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Microsoft.ML.Probabilistic.Compiler.dll",
+        "Microsoft.ML.Probabilistic.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

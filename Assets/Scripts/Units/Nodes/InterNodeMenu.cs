@@ -38,8 +38,6 @@ public class InterNodeMenu : MonoBehaviour
     {
         this.node = node;
         variableText.text = node.GetComponent<NodesLogic>().getVariableName();
-
-        Debug.Log("Name is : "  + node.GetComponent<NodesLogic>().getVariableName());
         definitionText.text = node.GetComponent<NodesLogic>().getDefinition();
 
     }

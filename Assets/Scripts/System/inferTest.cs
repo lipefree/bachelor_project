@@ -5,28 +5,20 @@ using Microsoft.ML.Probabilistic.Models;
 using Microsoft.ML.Probabilistic;
 // using Microsoft.ML.Probabilistic.Compiler;
 
-public class inferTest : MonoBehaviour
+public class InferTest 
 {
     // Start is called before the first frame update
     InferenceEngine engine;
     Variable<bool> coin3;
 
-    object test;
-
-    void Start()
+    public InferTest() { 
+        engine = new InferenceEngine();
+    }
+    public Variable<bool> test()
     {
-        Variable<bool> coin = Variable.Bernoulli(0.5);
-        Variable<bool> coin2 = Variable.Bernoulli(0.5);
-        coin3 = coin & coin2;
-        engine = new InferenceEngine();  
-
-        test = engine.Infer(coin);
+        return Variable.Bernoulli(0.5);  
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        var test = new TreeNode();
-        Debug.Log("Probability both coins are heads: "+ test);
-    }
+    
 }
