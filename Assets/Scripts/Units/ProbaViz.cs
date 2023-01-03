@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Microsoft.ML.Probabilistic.Models;
+using System.Threading.Tasks;
 
 public class ProbaViz : MonoBehaviour
 {
@@ -23,39 +24,45 @@ public class ProbaViz : MonoBehaviour
         
     }
 
-    public void requestProbaViz()
-    {
+    public async void requestProbaViz()
+    {   
         var nodes = getListNodes();
+        var nodesScript = nodes.Select(node => node.GetComponent<NodesLogic>()).ToList();
         var roots = Presenter.getRoots(getListEdges());
-        var interNodes = nodes.Except(roots).ToList();
+        var rootsScript = roots.Select(node => node.GetComponent<NodesLogic>()).ToList();
+        var interNodes = nodes.Except(roots).Select(interNode => interNode.GetComponent<NodesLogic>()).ToList();
+        await printProbaViz(nodesScript, interNodes, rootsScript);
+    }
+
+    private void print(List<NodesLogic> nodes, List<NodesLogic> interNodes, List<NodesLogic> roots)
+    {
 
         Debug.Log("---ProbaViz---");
         //Observed value check
         foreach(var node in nodes) { 
-            var nodeScript = node.GetComponent<NodesLogic>();
-            if(nodeScript.isOberved()) { 
-                Debug.Log(nodeScript.getVariableName() + " is observed");
+            if(node.isOberved()) { 
+                Debug.Log(node.getVariableName() + " is observed");
             }
         }
         roots.ForEach(root => printRoot(root));
         interNodes.ForEach(interNode => printInterNode(interNode));
     }
 
-    public void printRoot(GameObject root)
+    private async Task printProbaViz(List<NodesLogic> nodes, List<NodesLogic> interNodes, List<NodesLogic> roots){
+        await Task.Run(() => print(nodes, interNodes, roots));
+    }
+    public void printRoot(NodesLogic root)
     {   
-        
-        var node = root.GetComponent<NodesLogic>();
-        var probabilities = node.getProbabilities();
+        var probabilities = root.getProbabilities();
 
-        Debug.Log(node.getVariableName() + ": P(0) = " + probabilities[0] + " | P(1) = " + probabilities[1] + ", Infer : " + engine.Infer(node.getInferProba()));
+        Debug.Log(root.getVariableName() + ": P(0) = " + probabilities[0] + " | P(1) = " + probabilities[1] + ", Infer : " + engine.Infer(root.getInferProba()));
     }
 
-    public void printInterNode(GameObject interNode)
+    public void printInterNode(NodesLogic interNode)
     {
-        var node = interNode.GetComponent<NodesLogic>();
         //var inferedProba = ... TODO: After definition is done, request inferengine 
 
-        Debug.Log(node.getVariableName() + ", definition : " + node.getDefinition() + ", Infer : " + engine.Infer(node.getInferProba()));
+        Debug.Log(interNode.getVariableName() + ", definition : " + interNode.getDefinition() + ", Infer : " + engine.Infer(interNode.getInferProba()));
     }
 
     private List<GameObject> getListNodes()

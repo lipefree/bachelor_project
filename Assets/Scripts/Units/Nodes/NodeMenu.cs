@@ -94,6 +94,12 @@ public class NodeMenu : MonoBehaviour
         return (centerPosition, parentNode);
     }
 
+    public void setObservedValue(string value)
+    {
+        Assert.IsNotNull(node);
+        node.GetComponent<NodesLogic>().setObservedValue(value);
+    }  
+
     public void Destroy() {
         Destroy(this.gameObject);
     }
