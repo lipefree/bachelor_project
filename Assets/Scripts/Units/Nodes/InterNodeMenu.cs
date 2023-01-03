@@ -14,7 +14,7 @@ public class InterNodeMenu : MonoBehaviour
     public TMP_Text definitionText;
 
     public TMP_Text variableText;
-
+    public GameObject parentButtonPrefab;
     private GameObject edge;
     public GameObject edgePrefab;
     private Vector2 anchoredPos;
@@ -54,7 +54,13 @@ public class InterNodeMenu : MonoBehaviour
     {   
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setDefinition(definition);
-    }   
+    } 
+
+    public void setObservedValue(string value)
+    {
+        Assert.IsNotNull(node);
+        node.GetComponent<NodesLogic>().setObservedValue(value);
+    }  
 
 
     public void CreateEdge()
@@ -75,8 +81,18 @@ public class InterNodeMenu : MonoBehaviour
     }
 
     public void RequestParents()
+    {   
+        var parents = Presenter.getParents(this.node, getListEdges());
+        printDebugList(parents);
+        var first = parents.First().GetComponent<NodesLogic>().getVariableName();
+        var parentButton = GameObject.FindGameObjectWithTag("RequestParentButton");
+        var button = Instantiate(parentButtonPrefab, new Vector3(0,0,0), Quaternion.identity, parentButton.transform);
+        GameObject.FindGameObjectWithTag("ParentButton").GetComponent<ParentButton>().setText(first);
+    }
+
+    public void receiveName(string name)
     {
-        printDebugList(Presenter.getParents(this.node, getListEdges()));
+
     }
 
     private void printDebugList(List<GameObject> list)
@@ -101,6 +117,14 @@ public class InterNodeMenu : MonoBehaviour
     public void Destroy() {
         Destroy(this.gameObject);
     }
+
+    public void DestroyNode()
+    {
+        Assert.IsNotNull(node);
+        Destroy(node);
+        Destroy();
+    }
+
 
     void PlaceUi()
     {

@@ -98,6 +98,13 @@ public class NodeMenu : MonoBehaviour
         Destroy(this.gameObject);
     }
 
+    public void DestroyNode()
+    {
+        Assert.IsNotNull(node);
+        Destroy(node);
+        Destroy();
+    }
+
     void PlaceUi()
     {
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("NodeMenu");

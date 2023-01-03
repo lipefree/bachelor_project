@@ -13,6 +13,7 @@ public class MenuInstantiation : MonoBehaviour
     private GameObject Menu;
     public GameObject MenuPrefab;
     public GameObject InterNodeMenuPrefab;
+    public GameObject EdgeMenuPrefab;
     public InferPresenter Presenter;
     public GameObject NodeMenuPrefab;
 
@@ -35,32 +36,53 @@ public class MenuInstantiation : MonoBehaviour
             // We don't want 2 menu at the time
             destroyMenus();
 
-            var (isNode, node) = OnTopOfNode();
+            var (type, obj) = OnTopOf();
 
-            if (isNode)
-            {   
-                if(Presenter.isNodeRoot(node, getListEdges())){
-                    Menu = InstantiateObject(NodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
-                    Menu.GetComponent<NodeMenu>().SetNode(node);
-                } else {
-                    Menu = InstantiateObject(InterNodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
-                    Menu.GetComponent<InterNodeMenu>().SetNode(node);
-                }
+            switch(type) { 
+                case objectType.Node:
+                    if(Presenter.isNodeRoot(obj, getListEdges())){
+                        Menu = InstantiateObject(NodeMenuPrefab, new Vector3(0, 0, 0), true);
+                        Menu.GetComponent<NodeMenu>().SetNode(obj);
+                    } else {
+                        Menu = InstantiateObject(InterNodeMenuPrefab, new Vector3(0, 0, 0), true);
+                        Menu.GetComponent<InterNodeMenu>().SetNode(obj);
+                    }
+                    break;
+
+                case objectType.Edge:
+                    Menu = InstantiateObject(EdgeMenuPrefab, new Vector3(0, 0, 0), true);
+                    Debug.Log("Set is " + obj);
+                    Menu.GetComponent<EdgeMenu>().SetEdge(obj);
+                    break;
                 
+                case objectType.Nothing:
+                    Menu = InstantiateObject(MenuPrefab, new Vector3(0, 0, 0), false);
+                    break;
             }
-            else
-            {
-                Menu = InstantiateObject(MenuPrefab, "Menu", new Vector3(0, 0, 0), false);
-            }
+
+            // if (isNode)
+            // {   
+            //     if(Presenter.isNodeRoot(node, getListEdges())){
+            //         Menu = InstantiateObject(NodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
+            //         Menu.GetComponent<NodeMenu>().SetNode(node);
+            //     } else {
+            //         Menu = InstantiateObject(InterNodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
+            //         Menu.GetComponent<InterNodeMenu>().SetNode(node);
+            //     }
+            // }
+            // else
+            // {
+            //     Menu = InstantiateObject(MenuPrefab, "Menu", new Vector3(0, 0, 0), false);
+            // }
         }
     }
 
-    GameObject InstantiateObject(GameObject prefab, string tag, Vector3 offset, bool onNode)
+    GameObject InstantiateObject(GameObject prefab, Vector3 offset, bool onNode)
     {
         return Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
-    (bool, GameObject) OnTopOfNode()
+    (objectType, GameObject) OnTopOf()
     {
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit hit;
@@ -70,16 +92,18 @@ public class MenuInstantiation : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag.Equals("Node"))
                 {
-                    return (true, hit.collider.gameObject);
+                    return (objectType.Node, hit.collider.gameObject);
+                } else if(hit.collider.gameObject.tag.Equals("Edge")) { 
+                    return (objectType.Edge, hit.collider.gameObject);
                 }
             }
         }
-        return (false, null);
+        return (objectType.Nothing, null);
     }
 
     private void destroyMenus()
     {
-        var tags = new List<string>() { "Menu", "NodeMenu" };
+        var tags = new List<string>() { "Menu", "NodeMenu", "EdgeMenu" };
 
         var listToDelete = tags.Select(tag => GameObject.FindGameObjectsWithTag(tag)).ToList();
         
@@ -92,5 +116,11 @@ public class MenuInstantiation : MonoBehaviour
     {
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
+    }
+
+    enum objectType {
+        Node,
+        Edge,
+        Nothing
     }
 }

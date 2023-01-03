@@ -25,9 +25,9 @@ public class EdgesLogic : MonoBehaviour
 
     public BoxCollider boxCollider;
 
-    private Transform nodeTipTransform;
+    public Transform nodeTipTransform;
     private Vector3 tipOriginPosition;
-    private Transform nodeBaseTransform;
+    public Transform nodeBaseTransform;
     private Vector3 baseOriginPosition;
     Mesh mesh;
     private InferPresenter Presenter;
@@ -84,20 +84,32 @@ public class EdgesLogic : MonoBehaviour
                     this.transform.position = nodeBaseTransform.position + new Vector3(0,0,1);
 
                     //Update proba
-
-                    Presenter.updateProba(getListNodes());
+                    var edges = getListEdges();
+                    foreach(var node in getListNodes())
+                    {
+                        var parents = Presenter.getParents(node, edges);
+                        node.GetComponent<NodesLogic>().updateParents(parents);
+                    }
+                    Presenter.updateProba(edges);
                 } 
             }
         } else { 
-            mesh.Clear();
-            Destroy(this.gameObject);
+            if(edgeBuilding) { 
+                Destroy();
+            }
         }
     }
 
     private Boolean remainUncyclic(GameObject tip) { 
-        var edges = getListNodes();
+        var edges = getListEdges();
         edges.Add(new List<GameObject>{nodeBaseTransform.gameObject, tip});
         return Presenter.remainUncyclic(edges);
+    }
+
+    public void Destroy()
+    {   
+        Destroy(this.gameObject);
+        mesh.Clear();
     }
 
     // Transform the edge so that the tip of the arrow follows the mouse
@@ -185,10 +197,15 @@ public class EdgesLogic : MonoBehaviour
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 
-    private List<List<GameObject>> getListNodes()
+    private List<List<GameObject>> getListEdges()
     {
         GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
+    }
+
+    private List<GameObject> getListNodes()
+    {
+        return GameObject.FindGameObjectsWithTag("Node").ToList();
     }
 
 }

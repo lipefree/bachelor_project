@@ -30,12 +30,20 @@ public class ProbaViz : MonoBehaviour
         var interNodes = nodes.Except(roots).ToList();
 
         Debug.Log("---ProbaViz---");
+        //Observed value check
+        foreach(var node in nodes) { 
+            var nodeScript = node.GetComponent<NodesLogic>();
+            if(nodeScript.isOberved()) { 
+                Debug.Log(nodeScript.getVariableName() + " is observed");
+            }
+        }
         roots.ForEach(root => printRoot(root));
         interNodes.ForEach(interNode => printInterNode(interNode));
     }
 
     public void printRoot(GameObject root)
-    {
+    {   
+        
         var node = root.GetComponent<NodesLogic>();
         var probabilities = node.getProbabilities();
 

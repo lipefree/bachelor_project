@@ -13,54 +13,6 @@ public class Definition {
         this.lexer = new Lexer();
     }
 
-    public bool isValid(List<string> env = null)
-    {   
-        //TODO: We should use a proper grammar, but it will take too much trials and errors 
-
-        //NOTE : This function is deprecated, we will just use the built in enginer.infer(interpret(definition))
-        // and catch if there is an error 
-        var tokensWithSpace = lexer.parse(definition);
-        var tokens = tokensWithSpace.Where(token => token.Item1 != TokenType.Space).ToList();
-        // printTokens(tokens);
-        //1. Every definition should contain an End Of Definition Token at the end.
-        if(tokens.Last().Item1 != TokenType.EDF) {
-            Debug.Log("Rule 1");
-            return false;
-        }
-
-        //2a. We should not find notDefined tokens in it
-        //2b. EDF tokens should only be found at the end
-        if(!rule2(tokens)) {
-            Debug.Log("Rule 2");
-            return false;
-        }
-
-        //3. We should have balanced parenthesis
-        if(!checkBalancedPar(tokens)){
-            Debug.Log("Rule 3");
-            return false;
-        }
-
-        //4. If indentifier or an intLit then the next token can be : op or EDF or closing brackets
-        //5. If closing bracket then the next token can be : brackets or op or EDF
-        if(!rule45(tokens)) { 
-            return false;
-        }
-
-        //6. All identifier should be defined in the environment
-        foreach(var (type, identifier) in tokens.Where(token => token.Item1 is TokenType.Identifier)){
-            if(!env.Contains(identifier)) {
-                Debug.Log("Rule 6");
-                return false;
-            }
-        }
-
-        //TODO: Some rules are not yet implemented
-        //7. op should be between 2 expressions : () + 2 is not valid but ((4)) + 3 is valid
-            
-        return true;
-    }
-
     //TODO: we should be able to handle all kind of variable not just bools.
     public Variable<bool> interpret(List<(Variable<bool>, string)> env) {
         var tokensWithSpace = lexer.parse(definition);
@@ -187,6 +139,55 @@ public class Definition {
         }
 
         return tokens.First().Item2 + eat(tokens.Skip(1).ToList());
+    }
+
+    //NOTE : This function is deprecated, we will just use the built in enginer.infer(interpret(definition))
+        // and catch if there is an error 
+    public bool isValid(List<string> env = null)
+    {   
+        //TODO: We should use a proper grammar, but it will take too much trials and errors 
+
+        
+        var tokensWithSpace = lexer.parse(definition);
+        var tokens = tokensWithSpace.Where(token => token.Item1 != TokenType.Space).ToList();
+        // printTokens(tokens);
+        //1. Every definition should contain an End Of Definition Token at the end.
+        if(tokens.Last().Item1 != TokenType.EDF) {
+            Debug.Log("Rule 1");
+            return false;
+        }
+
+        //2a. We should not find notDefined tokens in it
+        //2b. EDF tokens should only be found at the end
+        if(!rule2(tokens)) {
+            Debug.Log("Rule 2");
+            return false;
+        }
+
+        //3. We should have balanced parenthesis
+        if(!checkBalancedPar(tokens)){
+            Debug.Log("Rule 3");
+            return false;
+        }
+
+        //4. If indentifier or an intLit then the next token can be : op or EDF or closing brackets
+        //5. If closing bracket then the next token can be : brackets or op or EDF
+        if(!rule45(tokens)) { 
+            return false;
+        }
+
+        //6. All identifier should be defined in the environment
+        foreach(var (type, identifier) in tokens.Where(token => token.Item1 is TokenType.Identifier)){
+            if(!env.Contains(identifier)) {
+                Debug.Log("Rule 6");
+                return false;
+            }
+        }
+
+        //TODO: Some rules are not yet implemented
+        //7. op should be between 2 expressions : () + 2 is not valid but ((4)) + 3 is valid
+            
+        return true;
     }
 
     public bool rule2(List<(TokenType, string)> tokens) {

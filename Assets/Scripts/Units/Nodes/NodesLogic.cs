@@ -11,15 +11,22 @@ public class NodesLogic : MonoBehaviour
 {
     private Camera mainCamera;
     private float CameraZDistance;
-    private string variableName;
+    public string variableName;
 
     public GameObject MenuPrefab;
     private GameObject Menu;
-    private List<float> probabilities;
-    private string definition;
+    public List<float> probabilities;
+    public string definition;
 
     private Variable<bool> inferProbability;
     private InferPresenter Presenter;
+
+    private bool observed;
+    private bool observedValue;
+
+    public bool prebuild;
+    public List<NodesLogic> parents; 
+    private bool hasCustomDefinition;
 
     // Start is called before the first frame update
     void Start()
@@ -30,11 +37,16 @@ public class NodesLogic : MonoBehaviour
 
         Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
 
-        //defaults
-        variableName = "var" + getListNodes().Count;
-        probabilities = new List<float>(){0.5f, 0.5f};
-        CreateMenu();
-        updateProba();
+        if(!prebuild) { 
+            //defaults
+            variableName = "var" + getListNodes().Count;
+            probabilities = new List<float>(){0.5f, 0.5f};
+            observed = false;
+            parents = new List<NodesLogic>();
+            hasCustomDefinition = false;
+            CreateMenu();
+            updateProba();
+        }
     }
 
     // Update is called once per frame
@@ -58,11 +70,6 @@ public class NodesLogic : MonoBehaviour
 
         this.variableName = variableName;
         updateProba();
-    }
-
-    public string getVariableName()
-    {   
-        return this.variableName;
     }
 
     //TODO: Finish design this : How should we store probabilities ?
@@ -92,9 +99,32 @@ public class NodesLogic : MonoBehaviour
 
             this.inferProbability = Presenter.interpret(def, env2);
             this.definition = def;
+            this.hasCustomDefinition = true; 
         } catch(Exception e) { 
             Debug.Log("This definition is not accepted : " + e);
         }
+    }
+
+    public void setObservedValue(string value) {
+        if(!(value.Equals("1") || value.Equals("0") || value.Equals(""))) {
+            Debug.Log("Observed value should be in format '1' or '0'");
+        }
+
+        if(value.Equals("")){
+            this.observed = false;
+            this.inferProbability.ClearObservedValue();
+        } else if(value.Equals("1")) { 
+            this.observed = true;
+            this.inferProbability.ObservedValue = true;
+        } else { 
+            this.observed = true;
+            this.inferProbability.ObservedValue = false;
+        }
+    }
+
+    public string getVariableName()
+    {   
+        return this.variableName;
     }
 
     public string getDefinition()
@@ -110,6 +140,36 @@ public class NodesLogic : MonoBehaviour
     public Variable<bool> getInferProba()
     {
         return this.inferProbability;
+    }
+
+    public bool getObervedValue() {
+        return observedValue;
+    }
+
+    public bool isOberved() {
+        return observed;
+    }
+
+    public void updateParents(List<GameObject> parents) { 
+        this.parents = parents.Select(parent => parent.GetComponent<NodesLogic>()).ToList();
+        if(!this.hasCustomDefinition) { 
+            updateDefinitionOnUpdate();
+        }
+    }
+
+    private void updateDefinitionOnUpdate()
+    {
+        string updateRec(List<NodesLogic> parents) { 
+            if(parents.Count == 0) { 
+                return "";
+            } else if(parents.Count == 1) { 
+                return parents.First().getVariableName();
+            }
+
+            return parents.First().getVariableName() + " | " + updateRec(parents.Skip(1).ToList());
+        }
+
+        this.definition = updateRec(parents);
     }
 
     void CreateMenu()

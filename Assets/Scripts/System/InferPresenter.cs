@@ -21,7 +21,7 @@ public class InferPresenter : MonoBehaviour
     //DEPRECATED : We are calculating at definition, this function should be used for backward only 
     //TODO: This overload only exist because we can't see EdgeLogic from here.
     public async void updateProba(List<List<GameObject>> edges)
-    {
+    {   
         var graph = new Graph(edges);
         this.graph = graph;
 
