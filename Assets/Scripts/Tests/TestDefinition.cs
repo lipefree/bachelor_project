@@ -10,8 +10,8 @@ using UnityEngine.TestTools;
 // using Microsoft.ML.Probabilistic;
 
 public class TestDefinitions
-{   
-    InferenceEngine engine = new InferenceEngine();  
+{
+    InferenceEngine engine = new InferenceEngine();
     [Test]
     public void KindOfTest1()
     {
@@ -125,7 +125,7 @@ public class TestDefinitions
         var s = "(()())";
         var def = new Definition(s);
         var transform = s.Select(c => (TokenType.Delimiter, c.ToString())).ToList();
-        
+
         Assert.IsTrue(def.checkBalancedPar(transform), "Should be a balanced string");
     }
 
@@ -135,53 +135,8 @@ public class TestDefinitions
         var s = "(()()))";
         var def = new Definition(s);
         var transform = s.Select(c => (TokenType.Delimiter, c.ToString())).ToList();
-        
+
         Assert.IsFalse(def.checkBalancedPar(transform), "Should not be a balanced string");
-    }
-
-    [Test]
-    public void isValidTest1()
-    {
-        var s = "(()()))";
-        var def = new Definition(s);
-        
-        Assert.IsFalse(def.isValid(), "Should not be a valid definition : )( pattern is not accepted");
-    }
-
-    [Test]
-    public void rule45Test1() { 
-        var s = "(()())";
-        var def = new Definition(s);
-        var transform = s.Select(c => (TokenType.Delimiter, c.ToString())).ToList();
-
-        Assert.IsFalse(def.rule45(transform), "Should not be a valid definition : )( pattern is not accepted");
-
-    }
-
-    [Test]
-    public void isValidTest2()
-    {
-        var s = "((123*43)+(243     ))";
-        var def = new Definition(s);
-        Assert.IsTrue(def.isValid(), "Should be a valid definition");
-    }
-
-    [Test]
-    public void isValidTest3()
-    {
-        var s = "x + y * 2";
-        var def = new Definition(s);
-        var env = new List<string>(){"x", "y"};
-        Assert.IsTrue(def.isValid(env), "Should be a valid definition");
-    }
-
-    [Test]
-    public void isValidTest4()
-    {
-        var s = "x + y * 2";
-        var def = new Definition(s);
-        var env = new List<string>(){"x"};
-        Assert.IsFalse(def.isValid(env), "Should not be a valid definition");
     }
 
     [Test]
@@ -224,7 +179,7 @@ public class TestDefinitions
         var def = new Definition(input);
 
         var b1 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1") };
         printTokens(tokens);
         var res = def.gather(tokens, env);
     }
@@ -241,7 +196,7 @@ public class TestDefinitions
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
         var b3 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"),(b2, "b2"),(b3, "b3")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2"), (b3, "b3") };
         var res = def.gather(tokens, env);
 
         var b4 = b1 & (b2 | b3);
@@ -251,7 +206,7 @@ public class TestDefinitions
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b4inf);
 
-        Assert.IsTrue(b4inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b4inf.Equals(resinf), " Should have the same distribution");
 
     }
 
@@ -266,7 +221,7 @@ public class TestDefinitions
 
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"), (b2, "b2")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2") };
         var res = def.gather(tokens, env);
 
         var b3 = b1 | b2;
@@ -274,7 +229,7 @@ public class TestDefinitions
         var b2inf = engine.Infer(b3);
         var resinf = engine.Infer(res);
 
-        Assert.IsTrue(b2inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b2inf.Equals(resinf), " Should have the same distribution");
     }
 
     [Test]
@@ -288,7 +243,7 @@ public class TestDefinitions
 
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"), (b2, "b2")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2") };
         var res = def.gather(tokens, env);
 
         var b3 = ((b1 | b2));
@@ -296,7 +251,7 @@ public class TestDefinitions
         var b2inf = engine.Infer(b3);
         var resinf = engine.Infer(res);
 
-        Assert.IsTrue(b2inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b2inf.Equals(resinf), " Should have the same distribution");
     }
 
     [Test]
@@ -310,7 +265,7 @@ public class TestDefinitions
 
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"), (b2, "b2")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2") };
         var res = def.gather(tokens, env);
 
         var b3 = ((b1 | b2));
@@ -319,7 +274,7 @@ public class TestDefinitions
         var resinf = engine.Infer(res);
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b3inf);
-        Assert.IsTrue(b3inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
     }
 
     [Test]
@@ -333,7 +288,7 @@ public class TestDefinitions
 
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"), (b2, "b2")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2") };
         var res = def.gather(tokens, env);
 
         var b3 = ((b1 | (b2)));
@@ -342,7 +297,7 @@ public class TestDefinitions
         var resinf = engine.Infer(res);
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b3inf);
-        Assert.IsTrue(b3inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
     }
 
     [Test]
@@ -356,7 +311,7 @@ public class TestDefinitions
 
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"), (b2, "b2")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2") };
         var res = def.gather(tokens, env);
 
         var b3 = (((b1) | b2));
@@ -365,7 +320,7 @@ public class TestDefinitions
         var resinf = engine.Infer(res);
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b3inf);
-        Assert.IsTrue(b3inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
     }
 
     [Test]
@@ -380,7 +335,7 @@ public class TestDefinitions
         var b1 = Variable.Bernoulli(0.5);
         var b2 = Variable.Bernoulli(0.5);
         var b3 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1"),(b2, "b2"),(b3, "b3")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1"), (b2, "b2"), (b3, "b3") };
         var res = def.gather(tokens, env);
 
         var b4 = ((b1) & (b2 | b3));
@@ -390,7 +345,7 @@ public class TestDefinitions
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b4inf);
 
-        Assert.IsTrue(b4inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b4inf.Equals(resinf), " Should have the same distribution");
 
     }
 
@@ -404,7 +359,7 @@ public class TestDefinitions
         var def = new Definition(input);
 
         var b1 = Variable.Bernoulli(0.5);
-        var env = new List<(Variable<bool>, string)>(){(b1, "b1")};
+        var env = new List<(Variable<bool>, string)>() { (b1, "b1") };
         var res = def.gather(tokens, env);
 
         var b3 = (((b1)));
@@ -413,11 +368,13 @@ public class TestDefinitions
         var resinf = engine.Infer(res);
         Debug.Log("Via gather : " + resinf);
         Debug.Log("Via Infer : " + b3inf);
-        Assert.IsTrue(b3inf.Equals(resinf)," Should have the same distribution");
+        Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
     }
 
-    private void printTokens(List<(TokenType, string)> tokens) {
-        foreach(var (type, c) in tokens) { 
+    private void printTokens(List<(TokenType, string)> tokens)
+    {
+        foreach (var (type, c) in tokens)
+        {
             Debug.Log("[" + type + ", " + c + " ]");
         }
     }

@@ -21,7 +21,6 @@ public class ParentButton : MonoBehaviour
 
     public void OnClick()
     {
-        this.GetComponentInParent<InterNodeMenu>().receiveName(text.text);
     }
 
     public void setText(string text) 

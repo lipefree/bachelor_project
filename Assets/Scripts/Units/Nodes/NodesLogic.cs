@@ -25,22 +25,23 @@ public class NodesLogic : MonoBehaviour
     private bool observedValue;
 
     public bool prebuild;
-    public List<NodesLogic> parents; 
+    public List<NodesLogic> parents;
     private bool hasCustomDefinition;
 
     // Start is called before the first frame update
     void Start()
-    {   
+    {
         mainCamera = Camera.main;
-        CameraZDistance = 
+        CameraZDistance =
             mainCamera.WorldToScreenPoint(transform.position).z;
 
         Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
 
-        if(!prebuild) { 
+        if (!prebuild)
+        {
             //defaults
             variableName = "var" + getListNodes().Count;
-            probabilities = new List<float>(){0.5f, 0.5f};
+            probabilities = new List<float>() { 0.5f, 0.5f };
             observed = false;
             parents = new List<NodesLogic>();
             hasCustomDefinition = false;
@@ -49,22 +50,21 @@ public class NodesLogic : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnMouseDrag()
     {
-    }
-
-    void OnMouseDrag() {
         // Code for drag is from : https://www.youtube.com/watch?v=bK5kYjpqco0&ab_channel=Devsplorer
         transform.position = GetMousePosition();
     }
 
-    void OnMouseDown() {
+    void OnMouseDown()
+    {
         //Open new menu
     }
 
-    public void setVariableName(string variableName) {
-        if(!validName(variableName)){
+    public void setVariableName(string variableName)
+    {
+        if (!validName(variableName))
+        {
             return;
         }
 
@@ -72,7 +72,6 @@ public class NodesLogic : MonoBehaviour
         updateProba();
     }
 
-    //TODO: Finish design this : How should we store probabilities ?
     public void setProbabilitie0(float proba)
     {
         probabilities[0] = proba;
@@ -88,8 +87,9 @@ public class NodesLogic : MonoBehaviour
     }
 
     public void setDefinition(string def)
-    {   
-        try { 
+    {
+        try
+        {
             //Convert definition to infer.net
             var env2 = getListEdges()
                 .SelectMany(x => x) //flatten
@@ -99,31 +99,40 @@ public class NodesLogic : MonoBehaviour
 
             this.inferProbability = Presenter.interpret(def, env2);
             this.definition = def;
-            this.hasCustomDefinition = true; 
-        } catch(Exception e) { 
+            this.hasCustomDefinition = true;
+        }
+        catch (Exception e)
+        {
             Debug.Log("This definition is not accepted : " + e);
         }
     }
 
-    public void setObservedValue(string value) {
-        if(!(value.Equals("1") || value.Equals("0") || value.Equals(""))) {
+    public void setObservedValue(string value)
+    {
+        if (!(value.Equals("1") || value.Equals("0") || value.Equals("")))
+        {
             Debug.Log("Observed value should be in format '1' or '0'");
         }
 
-        if(value.Equals("")){
+        if (value.Equals(""))
+        {
             this.observed = false;
             this.inferProbability.ClearObservedValue();
-        } else if(value.Equals("1")) { 
+        }
+        else if (value.Equals("1"))
+        {
             this.observed = true;
             this.inferProbability.ObservedValue = true;
-        } else { 
+        }
+        else
+        {
             this.observed = true;
             this.inferProbability.ObservedValue = false;
         }
     }
 
     public string getVariableName()
-    {   
+    {
         return this.variableName;
     }
 
@@ -142,27 +151,35 @@ public class NodesLogic : MonoBehaviour
         return this.inferProbability;
     }
 
-    public bool getObervedValue() {
+    public bool getObervedValue()
+    {
         return observedValue;
     }
 
-    public bool isOberved() {
+    public bool isOberved()
+    {
         return observed;
     }
 
-    public void updateParents(List<GameObject> parents) { 
+    public void updateParents(List<GameObject> parents)
+    {
         this.parents = parents.Select(parent => parent.GetComponent<NodesLogic>()).ToList();
-        if(!this.hasCustomDefinition) { 
+        if (!this.hasCustomDefinition)
+        {
             updateDefinitionOnUpdate();
         }
     }
 
     private void updateDefinitionOnUpdate()
     {
-        string updateRec(List<NodesLogic> parents) { 
-            if(parents.Count == 0) { 
+        string updateRec(List<NodesLogic> parents)
+        {
+            if (parents.Count == 0)
+            {
                 return "";
-            } else if(parents.Count == 1) { 
+            }
+            else if (parents.Count == 1)
+            {
                 return parents.First().getVariableName();
             }
 
@@ -173,7 +190,7 @@ public class NodesLogic : MonoBehaviour
     }
 
     void CreateMenu()
-    {   
+    {
         DestroyMenu();
         Menu = Instantiate(MenuPrefab, new Vector3(0, 0, 0), Quaternion.identity, this.transform);
         Menu.GetComponent<NodeMenu>().SetNode(this.gameObject);
@@ -181,20 +198,17 @@ public class NodesLogic : MonoBehaviour
 
     void DestroyMenu()
     {
-        foreach(var menu in GameObject.FindGameObjectsWithTag("NodeMenu")) {
+        foreach (var menu in GameObject.FindGameObjectsWithTag("NodeMenu"))
+        {
             Destroy(menu);
         }
     }
 
-    public Variable<bool> DistributionFunction() 
+    private Vector3 GetMousePosition()
     {
-        return Variable.Bernoulli(0.5);
-    }
-
-    private Vector3 GetMousePosition() { 
-        Vector3 ScreenPosition = 
+        Vector3 ScreenPosition =
             new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance);
-        
+
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 
@@ -215,18 +229,21 @@ public class NodesLogic : MonoBehaviour
         return GameObject.FindGameObjectsWithTag("Node").ToList();
     }
 
-    private bool validName(string name) { 
+    private bool validName(string name)
+    {
         var letters = new List<string>(){
             "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
             "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"
         };
 
-        if(!letters.Contains(name.First().ToString())) { 
+        if (!letters.Contains(name.First().ToString()))
+        {
             Debug.Log("Name must begin by a letter");
             return false;
         }
 
-        if(name.Contains(" ")){
+        if (name.Contains(" "))
+        {
             Debug.Log("Spaces are not allowed in name");
             return false;
         }

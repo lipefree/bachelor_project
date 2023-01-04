@@ -11,9 +11,7 @@ public class NormalMenu : MonoBehaviour
 {
 
     public GameObject nodeInstantiantionPrefab;
-    public GameObject edgePrefab;
     private GameObject node;
-    private GameObject edge;
     private Camera mainCamera;
     private float CameraZDistance;
 
@@ -49,39 +47,6 @@ public class NormalMenu : MonoBehaviour
             new Vector3(Input.mousePosition.x, Input.mousePosition.y, CameraZDistance);
 
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
-    }
-
-    private (Vector3, Transform) findNodeCenter()
-    {
-        Vector3 centerPosition = new Vector3();
-        Vector3 UICenterPosition = mainCamera.ScreenToWorldPoint(this.transform.position);
-        RaycastHit hit;
-        Transform parentNode = null;
-        if (Physics.Raycast(UICenterPosition, Vector3.forward, out hit, Mathf.Infinity) || Physics.Raycast(UICenterPosition, Vector3.back, out hit, Mathf.Infinity))
-        {
-            if (hit.collider != null)
-            {
-                if (hit.collider.gameObject.tag.Equals("Node"))
-                {
-                    parentNode = hit.collider.gameObject.transform;
-                    centerPosition = parentNode.position + new Vector3(0, 0, 1); // Centers it on the center of the node
-                }
-            }
-        }
-
-        return (centerPosition, parentNode);
-    }
-
-    private List<(GameObject, EdgesLogic)> edgesWithScripts()
-    {
-        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
-        return edges.ToList().Select(edge => (edge, edge.GetComponent<EdgesLogic>())).ToList();
-    }
-
-    private List<List<GameObject>> getListNodes()
-    {
-        GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
-        return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
     }
 
     void PlaceUi()

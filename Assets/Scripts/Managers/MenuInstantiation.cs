@@ -38,12 +38,16 @@ public class MenuInstantiation : MonoBehaviour
 
             var (type, obj) = OnTopOf();
 
-            switch(type) { 
+            switch (type)
+            {
                 case objectType.Node:
-                    if(Presenter.isNodeRoot(obj, getListEdges())){
+                    if (Presenter.isNodeRoot(obj, getListEdges()))
+                    {
                         Menu = InstantiateObject(NodeMenuPrefab, new Vector3(0, 0, 0), true);
                         Menu.GetComponent<NodeMenu>().SetNode(obj);
-                    } else {
+                    }
+                    else
+                    {
                         Menu = InstantiateObject(InterNodeMenuPrefab, new Vector3(0, 0, 0), true);
                         Menu.GetComponent<InterNodeMenu>().SetNode(obj);
                     }
@@ -54,26 +58,11 @@ public class MenuInstantiation : MonoBehaviour
                     Debug.Log("Set is " + obj);
                     Menu.GetComponent<EdgeMenu>().SetEdge(obj);
                     break;
-                
+
                 case objectType.Nothing:
                     Menu = InstantiateObject(MenuPrefab, new Vector3(0, 0, 0), false);
                     break;
             }
-
-            // if (isNode)
-            // {   
-            //     if(Presenter.isNodeRoot(node, getListEdges())){
-            //         Menu = InstantiateObject(NodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
-            //         Menu.GetComponent<NodeMenu>().SetNode(node);
-            //     } else {
-            //         Menu = InstantiateObject(InterNodeMenuPrefab, "NodeMenu", new Vector3(0, 0, 0), true);
-            //         Menu.GetComponent<InterNodeMenu>().SetNode(node);
-            //     }
-            // }
-            // else
-            // {
-            //     Menu = InstantiateObject(MenuPrefab, "Menu", new Vector3(0, 0, 0), false);
-            // }
         }
     }
 
@@ -93,7 +82,9 @@ public class MenuInstantiation : MonoBehaviour
                 if (hit.collider.gameObject.tag.Equals("Node"))
                 {
                     return (objectType.Node, hit.collider.gameObject);
-                } else if(hit.collider.gameObject.tag.Equals("Edge")) { 
+                }
+                else if (hit.collider.gameObject.tag.Equals("Edge"))
+                {
                     return (objectType.Edge, hit.collider.gameObject);
                 }
             }
@@ -106,7 +97,7 @@ public class MenuInstantiation : MonoBehaviour
         var tags = new List<string>() { "Menu", "NodeMenu", "EdgeMenu" };
 
         var listToDelete = tags.Select(tag => GameObject.FindGameObjectsWithTag(tag)).ToList();
-        
+
         listToDelete.ForEach(menus =>
             menus.ToList()
                 .ForEach(menu => Destroy(menu)));
@@ -118,7 +109,8 @@ public class MenuInstantiation : MonoBehaviour
         return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
     }
 
-    enum objectType {
+    enum objectType
+    {
         Node,
         Edge,
         Nothing

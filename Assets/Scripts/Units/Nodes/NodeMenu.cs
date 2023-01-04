@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class NodeMenu : MonoBehaviour
-{   
+{
     private GameObject node;
 
     public TMP_Text variableText;
@@ -27,18 +27,12 @@ public class NodeMenu : MonoBehaviour
         PlaceUi();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetNode(GameObject node)
     {
         this.node = node;
         variableText.text = node.GetComponent<NodesLogic>().getVariableName();
 
-        Debug.Log("Name is : "  + node.GetComponent<NodesLogic>().getVariableName());
+        Debug.Log("Name is : " + node.GetComponent<NodesLogic>().getVariableName());
         var probabilities = node.GetComponent<NodesLogic>().getProbabilities();
         p0Text.text = probabilities[0].ToString();
         p1Text.text = probabilities[1].ToString();
@@ -46,25 +40,25 @@ public class NodeMenu : MonoBehaviour
 
 
     public void setVariableName(string variableName)
-    {   
+    {
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setVariableName(variableName);
     }
 
     //TODO: Finish this design : What should the function receive ?
     public void setProbabilitie0(string proba)
-    {   
+    {
         Assert.IsNotNull(node);
         float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
         node.GetComponent<NodesLogic>().setProbabilitie0(probaF);
-    }   
+    }
 
     public void setProbabilitie1(string proba)
-    {   
+    {
         Assert.IsNotNull(node);
         float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
         node.GetComponent<NodesLogic>().setProbabilitie1(probaF);
-    }  
+    }
 
     public void CreateEdge()
     {
@@ -98,9 +92,10 @@ public class NodeMenu : MonoBehaviour
     {
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setObservedValue(value);
-    }  
+    }
 
-    public void Destroy() {
+    public void Destroy()
+    {
         Destroy(this.gameObject);
     }
 
@@ -116,7 +111,8 @@ public class NodeMenu : MonoBehaviour
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("NodeMenu");
         RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos);
         var offset = new Vector3(70, 50, 0);
-        foreach(GameObject obj in menuWindow) {
+        foreach (GameObject obj in menuWindow)
+        {
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0) + offset;
         }
     }

@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3695990729099089225
 CanvasRenderer:
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2fe13c93940d3419f1a7e82fb81a3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeInstantiantionPrefab: {fileID: 4347360444312967573, guid: 163603a6fa69a444cb9c3a852fa31acf, type: 3}
+  nodeInstantiantionPrefab: {fileID: 2646546752226290571, guid: ea209b3917ce29745b928cd3f9e80667, type: 3}
   edgePrefab: {fileID: 0}
 --- !u!114 &4051354142020124807
 MonoBehaviour:
@@ -362,7 +362,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -4, y: 1}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8989549431628334792
 CanvasRenderer:

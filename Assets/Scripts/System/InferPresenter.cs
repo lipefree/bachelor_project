@@ -6,43 +6,7 @@ using UnityEngine;
 
 public class InferPresenter : MonoBehaviour
 { 
-    InferProba inferEngine;
-
     Graph graph;
-
-    List<List<GameObject>> edges;
-
-    void Start() 
-    {
-        edges = new List<List<GameObject>>();
-        inferEngine = new InferProba();
-    }
-
-    //DEPRECATED : We are calculating at definition, this function should be used for backward only 
-    //TODO: This overload only exist because we can't see EdgeLogic from here.
-    public async void updateProba(List<List<GameObject>> edges)
-    {   
-        var graph = new Graph(edges);
-        this.graph = graph;
-
-        var newProbaTask = getProba(graph);
-
-        var newProba = await newProbaTask;
-
-        //update Probaviz
-    }
-
-    private async Task<Graph> getProba(Graph graph)
-    {
-        return await Task.Run(() => inferEngine.getProba(graph));
-    }
-
-    public void updateProba()
-    {
-        var newProba = inferEngine.getProba(this.graph);
-
-        // Update ProbaViz
-    }
 
     public bool isNodeRoot(GameObject node, List<List<GameObject>> edges)
     {   
@@ -72,25 +36,9 @@ public class InferPresenter : MonoBehaviour
         }
     }
 
-    public bool checkDefinition(string definition, List<string> env)
-    {
-        var def = new Definition(definition);
-        return def.isValid(env);
-    }
-
     public Variable<bool> interpret(string definition, List<(Variable<bool>, string)> env)
     {
         var def = new Definition(definition);
         return def.interpret(env);
     }
-
-    
-
-    //TODO: Cant put it here why ?
-    // private List<List<GameObject>> getListNodes()
-    // {
-    //     GameObject[] edges = GameObject.FindGameObjectsWithTag("Edge");
-    //     return edges.ToList().Select(edge => edge.GetComponent<EdgesLogic>().getNodesTransform()).Where(nodes => nodes != null).ToList();
-    // }
-
 }

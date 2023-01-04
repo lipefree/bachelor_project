@@ -90,7 +90,6 @@ public class EdgesLogic : MonoBehaviour
                         var parents = Presenter.getParents(node, edges);
                         node.GetComponent<NodesLogic>().updateParents(parents);
                     }
-                    Presenter.updateProba(edges);
                 } 
             }
         } else { 

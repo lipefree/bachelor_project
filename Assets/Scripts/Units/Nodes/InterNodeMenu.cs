@@ -28,12 +28,6 @@ public class InterNodeMenu : MonoBehaviour
         Presenter = GameObject.FindGameObjectWithTag("Presenter").GetComponent<InferPresenter>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SetNode(GameObject node)
     {
         this.node = node;
@@ -44,23 +38,23 @@ public class InterNodeMenu : MonoBehaviour
 
 
     public void setVariableName(string variableName)
-    {   
+    {
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setVariableName(variableName);
     }
 
     //TODO: Finish this design : What should the function receive ?
     public void setDefinition(string definition)
-    {   
+    {
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setDefinition(definition);
-    } 
+    }
 
     public void setObservedValue(string value)
     {
         Assert.IsNotNull(node);
         node.GetComponent<NodesLogic>().setObservedValue(value);
-    }  
+    }
 
 
     public void CreateEdge()
@@ -77,28 +71,23 @@ public class InterNodeMenu : MonoBehaviour
 
         //destroy parent (menu window in this case)
         Destroy(this.gameObject);
-
     }
 
     public void RequestParents()
-    {   
+    {
         var parents = Presenter.getParents(this.node, getListEdges());
         printDebugList(parents);
         var first = parents.First().GetComponent<NodesLogic>().getVariableName();
         var parentButton = GameObject.FindGameObjectWithTag("RequestParentButton");
-        var button = Instantiate(parentButtonPrefab, new Vector3(0,0,0), Quaternion.identity, parentButton.transform);
+        var button = Instantiate(parentButtonPrefab, new Vector3(0, 0, 0), Quaternion.identity, parentButton.transform);
         GameObject.FindGameObjectWithTag("ParentButton").GetComponent<ParentButton>().setText(first);
     }
 
-    public void receiveName(string name)
-    {
-
-    }
 
     private void printDebugList(List<GameObject> list)
-    {   
+    {
         Debug.Log("Parent list : ");
-        foreach(var elem in list)
+        foreach (var elem in list)
         {
             Debug.Log(elem.GetComponent<NodesLogic>().getVariableName());
         }
@@ -114,7 +103,8 @@ public class InterNodeMenu : MonoBehaviour
         return (centerPosition, parentNode);
     }
 
-    public void Destroy() {
+    public void Destroy()
+    {
         Destroy(this.gameObject);
     }
 
@@ -131,7 +121,8 @@ public class InterNodeMenu : MonoBehaviour
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("NodeMenu");
         RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos);
         var offset = new Vector3(70, 50, 0);
-        foreach(GameObject obj in menuWindow) {
+        foreach (GameObject obj in menuWindow)
+        {
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0) + offset;
         }
     }
