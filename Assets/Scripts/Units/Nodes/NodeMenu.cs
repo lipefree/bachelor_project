@@ -32,7 +32,7 @@ public class NodeMenu : MonoBehaviour
         this.node = node;
         variableText.text = node.GetComponent<NodesLogic>().getVariableName();
 
-        Debug.Log("Name is : " + node.GetComponent<NodesLogic>().getVariableName());
+        // Debug.Log("Name is : " + node.GetComponent<NodesLogic>().getVariableName());
         var probabilities = node.GetComponent<NodesLogic>().getProbabilities();
         p0Text.text = probabilities[0].ToString();
         p1Text.text = probabilities[1].ToString();

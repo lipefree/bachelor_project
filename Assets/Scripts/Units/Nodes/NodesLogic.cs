@@ -45,6 +45,7 @@ public class NodesLogic : MonoBehaviour
             observed = false;
             parents = new List<NodesLogic>();
             hasCustomDefinition = false;
+            definition = "";
             CreateMenu();
             updateProba();
         }
@@ -70,6 +71,7 @@ public class NodesLogic : MonoBehaviour
 
         this.variableName = variableName;
         updateProba();
+        notifyInterNodes();
     }
 
     public void setProbabilitie0(float proba)
@@ -90,21 +92,27 @@ public class NodesLogic : MonoBehaviour
     {
         try
         {
-            //Convert definition to infer.net
-            var env2 = getListEdges()
-                .SelectMany(x => x) //flatten
-                .Distinct()
-                .Select(node => (node.GetComponent<NodesLogic>().getInferProba(), node.GetComponent<NodesLogic>().getVariableName()))
-                .ToList();
-
-            this.inferProbability = Presenter.interpret(def, env2);
-            this.definition = def;
+            interpret(def);
             this.hasCustomDefinition = true;
         }
         catch (Exception e)
         {
             Debug.Log("This definition is not accepted : " + e);
         }
+    }
+
+    public void interpret(string def)
+    { 
+        //Convert definition to infer.net
+        var env2 = getListEdges()
+            .SelectMany(x => x) //flatten
+            .Distinct()
+            .Select(node => (node.GetComponent<NodesLogic>().getInferProba(), node.GetComponent<NodesLogic>().getVariableName()))
+            .ToList();
+        
+        var env = parents.Select(parent => (parent.getInferProba(), parent.getVariableName())).ToList();
+        this.inferProbability = Presenter.interpret(def, env);
+        this.definition = def;
     }
 
     public void setObservedValue(string value)
@@ -162,11 +170,12 @@ public class NodesLogic : MonoBehaviour
     }
 
     public void updateParents(List<GameObject> parents)
-    {
+    {   
         this.parents = parents.Select(parent => parent.GetComponent<NodesLogic>()).ToList();
         if (!this.hasCustomDefinition)
         {
             updateDefinitionOnUpdate();
+            interpret(this.definition);
         }
     }
 
@@ -212,7 +221,6 @@ public class NodesLogic : MonoBehaviour
         return mainCamera.ScreenToWorldPoint(ScreenPosition);
     }
 
-    //TODO: Presenter can't see EdgeLogic namespace for some reasons
     private void updateProba()
     {
         this.inferProbability = Variable.Bernoulli(probabilities[1]);
@@ -249,6 +257,16 @@ public class NodesLogic : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void notifyInterNodes()
+    {
+        var edges = getListEdges();
+        foreach(var node in Presenter.getInterNodes(edges))
+        {
+            var parents = Presenter.getParents(node, edges);
+            node.GetComponent<NodesLogic>().updateParents(parents);
+        }
     }
 
 }
