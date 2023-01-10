@@ -14,7 +14,11 @@ public class Definition
         this.lexer = new Lexer();
     }
 
-    //TODO: we should be able to handle all kind of variable not just bools.
+    /// <summary>
+    /// interpret the field 'definition' into an infer.NET variable
+    /// </summary>
+    /// <param name="env"> List of variables environement.</param>
+    /// <returns>An infer.NET variable.</returns>
     public Variable<bool> interpret(List<(Variable<bool>, string)> env)
     {
         var tokensWithSpace = lexer.parse(definition);
@@ -23,6 +27,12 @@ public class Definition
         return gather(tokens, env);
     }
 
+    /// <summary>
+    /// Consume the tokens to generate an infer.NET variable
+    /// </summary>
+    /// <param name="tokens"> List of tokens.</param>
+    /// <param name="env"> List of variables environement.</param>
+    /// <returns>An infer.NET variable.</returns>
     public Variable<bool> gather(List<(TokenType, string)> tokens, List<(Variable<bool>, string)> env)
     {
         //The eating parameter is for debug purposes
@@ -76,6 +86,13 @@ public class Definition
         return gatherAcc(tokens, env, z, eating);
     }
 
+    /// <summary>
+    /// Consume one token to generate an infer.NET variable
+    /// </summary>
+    /// <param name="z"> Variable accumulator.</param>
+    /// <param name="t1"> Operation token.</param>
+    /// <param name="next"> Variable to process.</param>
+    /// <returns>An infer.NET variable.</returns>
     public Variable<bool> consume(Variable<bool> z, (TokenType, string) t1, Variable<bool> next)
     {
         var (type1, s1) = t1;
@@ -96,7 +113,12 @@ public class Definition
         }
 
     }
-
+    
+    /// <summary>
+    /// Check if the tokens have balanced parenthesis
+    /// </summary>
+    /// <param name="tokens"> List of tokens.</param>
+    /// <returns>whether the parenthesis are balanced or not.</returns>
     public bool checkBalancedPar(List<(TokenType, string)> tokens)
     {
         int balanced = 0;
@@ -124,9 +146,13 @@ public class Definition
         return balanced == 0 ? true : false;
     }
 
+    /// <summary>
+    /// Find the closing parenthesis and returns the sublist of tokens inside the range
+    /// </summary>
+    /// <param name="tokens"> List of tokens.</param>
+    /// <returns>The sublist of tokens and the index of the closing parenthesis.</returns>
     public (List<(TokenType, string)>, int) findSubList(List<(TokenType, string)> tokens)
     {
-        //Find closing bracket
         int balanced = 0;
         int index = 0;
         foreach (var (type, c) in tokens)
