@@ -30,7 +30,7 @@ public class MenuInstantiation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.C))
+        if (Input.GetMouseButtonDown(1))
         {
 
             // We don't want 2 menu at the time

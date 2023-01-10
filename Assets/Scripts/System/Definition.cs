@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.ML.Probabilistic.Models;
@@ -23,7 +24,10 @@ public class Definition
     {
         var tokensWithSpace = lexer.parse(definition);
         var tokens = tokensWithSpace.Where(token => token.Item1 != TokenType.Space).ToList();
-
+        if(!checkBalancedPar(tokens))
+        {
+            throw new ArgumentException("The parenthesis in the definition are not balanced");
+        }
         return gather(tokens, env);
     }
 

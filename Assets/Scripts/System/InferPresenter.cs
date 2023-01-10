@@ -15,7 +15,8 @@ public class InferPresenter : MonoBehaviour
     }
 
     public List<GameObject> getParents(GameObject node, List<List<GameObject>> edges)
-    {
+    {   
+        Debug.Log("nb of edges : " + edges.Count);
         var graph = new Graph(edges);
         return graph.getParents(node, edges);
     }
@@ -23,6 +24,12 @@ public class InferPresenter : MonoBehaviour
     public List<GameObject> getRoots(List<List<GameObject>> edges)
     {
         return new Graph(edges).getRoots(edges);
+    }
+
+    public List<GameObject> getInterNodes(List<List<GameObject>> edges) 
+    { 
+        var nodes = edges.SelectMany(x => x).Distinct().ToList();
+        return nodes.Except(getRoots(edges)).ToList();
     }
 
     public bool remainUncyclic(List<List<GameObject>> edges)
@@ -39,6 +46,18 @@ public class InferPresenter : MonoBehaviour
     public Variable<bool> interpret(string definition, List<(Variable<bool>, string)> env)
     {
         var def = new Definition(definition);
+        Debug.Log("Def : "+definition);
+        printEnv(env);
         return def.interpret(env);
+    }
+
+    private void printEnv(List<(Variable<bool>, string)> env)
+    {   
+        Debug.Log("ENV : ");
+        foreach(var v in env)
+        {
+            Debug.Log(v.Item2);
+        }
+        Debug.Log("----");
     }
 }

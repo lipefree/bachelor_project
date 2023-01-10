@@ -371,6 +371,29 @@ public class TestDefinitions
         Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
     }
 
+    [Test]
+    public void gatherTest10()
+    {
+        var lexer = new Lexer();
+        var input = "LungDisease | var6";
+        var tokensS = lexer.parse(input);
+        var tokens = tokensS.Where(token => token.Item1 != TokenType.Space).ToList();
+        var def = new Definition(input);
+
+        var LungDisease = Variable.Bernoulli(0.5);
+        var var6 = Variable.Bernoulli(0.5);
+        var env = new List<(Variable<bool>, string)>() { (LungDisease, "LungDisease"), (var6, "var6") };
+        var res = def.gather(tokens, env);
+
+        var b3 = LungDisease | var6;
+
+        var b3inf = engine.Infer(b3);
+        var resinf = engine.Infer(res);
+        Debug.Log("Via gather : " + resinf);
+        Debug.Log("Via Infer : " + b3inf);
+        Assert.IsTrue(b3inf.Equals(resinf), " Should have the same distribution");
+    }
+
     private void printTokens(List<(TokenType, string)> tokens)
     {
         foreach (var (type, c) in tokens)

@@ -85,7 +85,7 @@ public class EdgesLogic : MonoBehaviour
 
                     //Update proba
                     var edges = getListEdges();
-                    foreach(var node in getListNodes())
+                    foreach(var node in Presenter.getInterNodes(edges))
                     {
                         var parents = Presenter.getParents(node, edges);
                         node.GetComponent<NodesLogic>().updateParents(parents);

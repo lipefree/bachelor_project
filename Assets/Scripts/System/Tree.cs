@@ -25,7 +25,6 @@ public class Graph
         var discover = new HashSet<TreeNode>();
         int time = 0;
 
-
         foreach (TreeNode node in getNodes())
         {
             if (!visited.Contains(node))
@@ -54,7 +53,6 @@ public class Graph
             result.Add(new Tuple<TreeNode, int>(u, time));
         }
     }
-
 
     public Boolean isCyclic()
     {
@@ -184,7 +182,7 @@ public class Graph
 
             successor
                 .Where(node => !nodes.Contains(node) && !toVisit.Contains(node))
-                .ToList() // NO foreach method on IEnum type
+                .ToList()
                 .ForEach(node => toVisit.Add(node));
 
         }
@@ -216,9 +214,9 @@ public class Graph
     {
         var parents = new List<GameObject>();
         foreach (var edge in edges)
-        {
+        {   
             if (edge[1] == node)
-            {
+            {   
                 parents.Add(edge[0]);
             }
         }
