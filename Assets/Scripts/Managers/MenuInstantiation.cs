@@ -55,7 +55,6 @@ public class MenuInstantiation : MonoBehaviour
 
                 case objectType.Edge:
                     Menu = InstantiateObject(EdgeMenuPrefab, new Vector3(0, 0, 0), true);
-                    Debug.Log("Set is " + obj);
                     Menu.GetComponent<EdgeMenu>().SetEdge(obj);
                     break;
 

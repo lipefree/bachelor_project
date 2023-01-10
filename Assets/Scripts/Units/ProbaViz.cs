@@ -21,11 +21,11 @@ public class ProbaViz : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public async void requestProbaViz()
-    {   
+    {
         var nodes = getListNodes();
         var nodesScript = nodes.Select(node => node.GetComponent<NodesLogic>()).ToList();
         var roots = Presenter.getRoots(getListEdges());
@@ -39,8 +39,10 @@ public class ProbaViz : MonoBehaviour
 
         Debug.Log("---ProbaViz---");
         //Observed value check
-        foreach(var node in nodes) { 
-            if(node.isOberved()) { 
+        foreach (var node in nodes)
+        {
+            if (node.isOberved())
+            {
                 Debug.Log(node.getVariableName() + " is observed");
             }
         }
@@ -48,11 +50,12 @@ public class ProbaViz : MonoBehaviour
         interNodes.ForEach(interNode => printInterNode(interNode));
     }
 
-    private async Task printProbaViz(List<NodesLogic> nodes, List<NodesLogic> interNodes, List<NodesLogic> roots){
+    private async Task printProbaViz(List<NodesLogic> nodes, List<NodesLogic> interNodes, List<NodesLogic> roots)
+    {
         await Task.Run(() => print(nodes, interNodes, roots));
     }
     public void printRoot(NodesLogic root)
-    {   
+    {
         var probabilities = root.getProbabilities();
 
         Debug.Log(root.getVariableName() + ": P(0) = " + probabilities[0] + " | P(1) = " + probabilities[1] + ", Infer : " + engine.Infer(root.getInferProba()));

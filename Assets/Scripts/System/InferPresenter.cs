@@ -16,7 +16,6 @@ public class InferPresenter : MonoBehaviour
 
     public List<GameObject> getParents(GameObject node, List<List<GameObject>> edges)
     {   
-        Debug.Log("nb of edges : " + edges.Count);
         var graph = new Graph(edges);
         return graph.getParents(node, edges);
     }
@@ -46,8 +45,7 @@ public class InferPresenter : MonoBehaviour
     public Variable<bool> interpret(string definition, List<(Variable<bool>, string)> env)
     {
         var def = new Definition(definition);
-        Debug.Log("Def : "+definition);
-        printEnv(env);
+        // printEnv(env);
         return def.interpret(env);
     }
 

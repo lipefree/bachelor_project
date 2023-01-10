@@ -34,7 +34,6 @@ public class EdgeMenu : MonoBehaviour
     void PlaceUi()
     {
         GameObject[] menuWindow = GameObject.FindGameObjectsWithTag("EdgeMenu");
-        Debug.Log("Moving " + menuWindow.ToList().Count);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(m_parent, Input.mousePosition, null, out anchoredPos);
         foreach(GameObject obj in menuWindow) {
             obj.transform.position += new Vector3(anchoredPos.x, anchoredPos.y, 0);

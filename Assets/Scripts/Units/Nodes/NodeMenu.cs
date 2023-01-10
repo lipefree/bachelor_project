@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -49,14 +50,55 @@ public class NodeMenu : MonoBehaviour
     public void setProbabilitie0(string proba)
     {
         Assert.IsNotNull(node);
-        float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
+        if (proba.Length == 0)
+        {
+            Debug.Log("The pobability is empty");
+            return;
+        }
+        float probaF;
+        try
+        {
+            probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("The probability is not a float");
+            return;
+        }
+
+        if (probaF < 0 || probaF > 1)
+        {
+            Debug.Log("The probability is not between 0 and 1");
+            return;
+        }
         node.GetComponent<NodesLogic>().setProbabilitie0(probaF);
     }
 
     public void setProbabilitie1(string proba)
     {
         Assert.IsNotNull(node);
-        float probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
+        if (proba.Length == 0)
+        {
+            Debug.Log("The pobability is empty");
+            return;
+        }
+        float probaF;
+        try
+        {
+            probaF = float.Parse(proba, CultureInfo.InvariantCulture.NumberFormat);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("The probability is not a float");
+            return;
+        }
+
+        if (probaF < 0 || probaF > 1)
+        {
+            Debug.Log("The probability is not between 0 and 1");
+            return;
+        }
+
         node.GetComponent<NodesLogic>().setProbabilitie1(probaF);
     }
 
